@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "127159368329",
+    "project_id": "ozove-e824c",
+    "storage_bucket": "ozove-e824c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127159368329:android:d2dc71325bb477611c2458",
+        "android_client_info": {
+          "package_name": "com.zify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127159368329-juna59h381nqhdj06l920hbr5do0hfmo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zify",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "127159368329-5r68a6lto3ukpmapnmn8tpmqcr0d6h7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_y53S5b3CfzkN3y2Hj_PulJzAe4g6kxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127159368329-5r68a6lto3ukpmapnmn8tpmqcr0d6h7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "127159368329-jl023il311kt6buubf27qc388uknj6de.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.OZove"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
