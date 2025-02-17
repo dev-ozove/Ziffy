@@ -7,7 +7,6 @@ import {
 } from '../../../Context/Types/ozove';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {times} from '../../../Components/helpers';
-import Entypo from 'react-native-vector-icons/Entypo';
 import PickupLocationIcon from '../../../../assests/Pickup_icon.svg';
 
 import BackIcon from '../../../../assests/back_icon.svg';
@@ -18,6 +17,7 @@ import Account_icon from '../../../../assests/sidebar/bookings/Avatar_icon.svg';
 
 import firestore from '@react-native-firebase/firestore';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useOzove} from '../../../Context/ozoveContext';
 
 const BookingInputScreen: React.FC<BookingInputScreenProps> = ({
   selectedVehicle,
@@ -52,6 +52,8 @@ const BookingInputScreen: React.FC<BookingInputScreenProps> = ({
 
   const [loading, setLoading] = useState(true);
   const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const {vechicleData} = useOzove();
 
   // Helper function to get initial state based on service type
   const getInitialServiceState = (serviceTitle: string) => {
@@ -448,21 +450,26 @@ const BookingInputScreen: React.FC<BookingInputScreenProps> = ({
           style={{
             flex: 1,
             flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 10,
             marginTop: 10,
           }}>
-          {Vechicle_data?.map((item, index) => {
+          {vechicleData?.map((item: any, index: number) => {
             const isSelected = selectedVehicle === index;
+            console.log(item);
             return (
               <TouchableOpacity
                 key={index}
-                style={{}}
+                style={{flex: 1}}
                 onPress={() => handleVechileChange(index)}>
                 <View
                   key={index}
                   style={{
-                    width: 110,
-                    height: 'auto',
-                    justifyContent: 'center',
+                    flex: 1,
+                    width: '100%',
+                    height: 150,
+                    padding: 2,
+                    justifyContent: 'flex-start',
                     alignItems: 'center',
                     borderRadius: 12,
                     marginHorizontal: 5,
@@ -472,75 +479,75 @@ const BookingInputScreen: React.FC<BookingInputScreenProps> = ({
                   }}>
                   <View
                     style={{
-                      height: 90,
-                      width: 90,
+                      flex: 1,
+                      width: '100%',
                     }}>
                     <Image
                       style={{
                         height: '100%',
                         width: '100%',
                         resizeMode: 'contain',
-                        borderRadius: 12,
                       }}
-                      source={item?.image}
+                      source={{uri: item?.image}}
                     />
                   </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      width: '100%',
-                    }}>
-                    <View style={{marginLeft: 10}}>
-                      <Text
-                        style={{
-                          color: '#4A4A4A',
-                          fontSize: 16,
-                          fontWeight: 600,
-                        }}>
-                        {item?.title}
-                      </Text>
-                    </View>
-                    <View style={{marginLeft: 10}}>
-                      <Text style={{color: '#767676', fontSize: 12}}>
-                        {`${item?.capacity} seater`}
-                      </Text>
-                    </View>
-                    <View style={{marginLeft: 10, paddingBottom: 20}}>
-                      <Text
-                        style={{
-                          color: '#333',
-                          fontSize: 14,
-                          fontWeight: 'bold',
-                        }}>
-                        {/* Pricing  */}
-                        <View
+                  <View style={{flex: 1, width: '100%'}}>
+                    <View
+                      style={{
+                        flex: 1,
+                        width: '100%',
+                      }}>
+                      <View style={{marginLeft: 10}}>
+                        <Text
                           style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
+                            color: '#4A4A4A',
+                            fontSize: 16,
+                            fontWeight: 600,
                           }}>
-                          <Text
+                          {item?.title}
+                        </Text>
+                      </View>
+                      <View style={{marginLeft: 10}}>
+                        <Text style={{color: '#767676', fontSize: 12}}>
+                          {`${item?.capacity} seater`}
+                        </Text>
+                      </View>
+                      <View style={{marginLeft: 10, paddingBottom: 20}}>
+                        <Text
+                          style={{
+                            color: '#333',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                          }}>
+                          <View
                             style={{
-                              color: 'green',
-                              fontWeight: 'bold',
-                              fontSize: 16,
+                              flexDirection: 'row',
+                              alignItems: 'center',
                             }}>
-                            From
-                          </Text>
-                          <Text
-                            style={{
-                              color: '#333',
-                              fontSize: 16,
-                              paddingHorizontal: 5,
-                            }}>
-                            $
-                            {index === 0
-                              ? vehiclePricing?.van?.minimumFare
-                              : index === 1
-                              ? vehiclePricing?.miniBus?.minimumFare
-                              : vehiclePricing?.bus?.minimumFare}
-                          </Text>
-                        </View>
-                      </Text>
+                            <Text
+                              style={{
+                                color: 'green',
+                                fontWeight: 'bold',
+                                fontSize: 16,
+                              }}>
+                              From
+                            </Text>
+                            <Text
+                              style={{
+                                color: '#333',
+                                fontSize: 16,
+                                paddingHorizontal: 5,
+                              }}>
+                              $
+                              {index === 0
+                                ? vehiclePricing?.van?.minimumFare
+                                : index === 1
+                                ? vehiclePricing?.miniBus?.minimumFare
+                                : vehiclePricing?.bus?.minimumFare}
+                            </Text>
+                          </View>
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </View>
@@ -571,7 +578,7 @@ const BookingInputScreen: React.FC<BookingInputScreenProps> = ({
                     fontSize: 18,
                     fontWeight: 'bold',
                   }}>
-                  {Vechicle_data[selectedVehicle]?.details.Full_name}
+                  {vechicleData[selectedVehicle]?.details.Full_name}
                 </Text>
                 <View
                   style={{
@@ -597,16 +604,7 @@ const BookingInputScreen: React.FC<BookingInputScreenProps> = ({
                           fontSize: 18,
                           fontWeight: 'bold',
                         }}>
-                        {`$${(
-                          (vehiclePricing[
-                            selectedVehicle === 0
-                              ? 'van'
-                              : selectedVehicle === 1
-                              ? 'miniBus'
-                              : 'bus'
-                          ]?.minimumFare || 0) /
-                          Vechicle_data[selectedVehicle]?.capacity
-                        ).toFixed(2)}`}
+                        {`$${vechicleData[selectedVehicle]?.capacity}`}
                       </Text>
                       <View>
                         <Text
