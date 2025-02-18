@@ -22,6 +22,7 @@ interface AuthContextType {
   _updateBookingData: (key: string, value: any) => void;
   _update_BookingData: (updates: any) => Promise<void>;
   Generate_OrderID: () => string;
+  vechicleData: any;
   ServerLoading: boolean;
   bookingData: bookingData;
 }
@@ -63,8 +64,29 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
     TotalPrice: null,
   });
 
+  const [vechicleData, set_vechicleData] = useState<any>([]);
+
   const dispatch = useDispatch();
   const User = useAppSelector(state => state.user.user);
+
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('vehicles')
+      .onSnapshot(
+        snapshot => {
+          const vehicles = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          set_vechicleData(vehicles);
+        },
+        error => {
+          console.error('Error fetching vehicles:', error);
+        },
+      );
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (!User?.uid) return; // Ensure User is available before subscribing
@@ -173,6 +195,8 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
       return newData;
     });
   };
+
+  console.log(vechicleData);
 
   const Generate_OrderID = () => {
     const randomPart = Math.floor(100000 + Math.random() * 900000); // Generate 6 random digits
@@ -325,6 +349,7 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
     _update_BookingData,
     ServerLoading,
     bookingData,
+    vechicleData,
   };
 
   return (
