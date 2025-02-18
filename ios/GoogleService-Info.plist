@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>127159368329-q9qde6uvp2ft0tiks11p24q6hi8nhhlh.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.127159368329-q9qde6uvp2ft0tiks11p24q6hi8nhhlh</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>127159368329-juna59h381nqhdj06l920hbr5do0hfmo.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA4cc6iM8vmHWsuJFlqwZuGPr7sto04nCU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>127159368329</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ozove.zify</string>
+	<key>PROJECT_ID</key>
+	<string>ozove-e824c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ozove-e824c.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:127159368329:ios:4a3f8c91d3dab0101c2458</string>
+	<key>DATABASE_URL</key>
+	<string>https://ozove-e824c-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

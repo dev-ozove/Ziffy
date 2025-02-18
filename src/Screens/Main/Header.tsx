@@ -10,8 +10,9 @@ import Per_person_price from '../../../assests/per_person_price_icon.svg';
 
 import Main_menu from '../../../assests/Main_menu.svg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useOzove} from '../../Context/ozoveContext';
-import {styles} from '../../Components/MainStyles';
+import { useOzove } from '../../Context/ozoveContext';
+import { styles } from '../../Components/MainStyles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface HeaderProps {
   navigation: any;
@@ -22,6 +23,7 @@ export default function Header({
   navigation,
   handleLocationSelect,
 }: HeaderProps) {
+  const insets = useSafeAreaInsets();
   // const {_getlocationSuggestions} = useOzove();
   // const [activeInput, setActiveInput] = React.useState('');
   // const [searchText, setSearchText] = React.useState('');
@@ -43,28 +45,33 @@ export default function Header({
     <View
       style={{
         position: 'absolute',
-        top: 10,
-        width: '95%',
+        top: 5,
+        // left: 10,
+        // width: '95%',
         flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+        // justifyContent: 'center',
+        // alignItems: 'center',
         zIndex: 2,
-        backgroundColor: 'transparent',
-        height: 120,
+        // backgroundColor: 'transparent',
+        // height: 120,
+        // backgroundColor: 'red',
+        paddingTop: insets.top,
+        paddingHorizontal: 10
+
       }}>
-      <View style={{flex: 1, flexDirection: 'column'}}>
+      <View style={{ flex: 1, }}>
         <View
           style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            // flex: 1,
+            // flexDirection: 'row',
+            // justifyContent: 'space-between',
           }}>
           <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
             <View
               style={{
                 height: 50,
                 width: 50,
-                padding: 10,
+                // padding: 10,
                 borderRadius: 100,
                 backgroundColor: 'white',
                 elevation: 5,
@@ -74,7 +81,7 @@ export default function Header({
               <Main_menu />
             </View>
           </TouchableOpacity>
-          <View style={{marginLeft: 20}}>
+          {/* <View style={{ marginLeft: 20 }}>
             <TouchableOpacity onPress={() => navigation.push('QRScanner')}>
               <View
                 style={{
@@ -88,9 +95,9 @@ export default function Header({
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <View style={{flexDirection: 'row'}}>
-                  <View style={{marginRight: 10}}>
-                    <Text style={{color: '#333', fontWeight: 'bold'}}>
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ marginRight: 10 }}>
+                    <Text style={{ color: '#333', fontWeight: 'bold' }}>
                       Scan
                     </Text>
                   </View>
@@ -104,7 +111,7 @@ export default function Header({
                 </View>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
 
         {/* <View style={{flex: 1}}>
