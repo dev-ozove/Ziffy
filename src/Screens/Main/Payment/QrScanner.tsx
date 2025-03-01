@@ -10,14 +10,28 @@ import {
 } from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import ScannerLogo from '../../../../assests/Scanner/scanner_logo.svg';
+import ScanPagination from '../../../../assests/DriverProfile/ScanPagination';
 
 const {width} = Dimensions.get('window');
 
-const QrScanner = ({navigation}: any) => {
+const QrScanner = ({navigation, route}: any) => {
+  const {source} = route.params || {};
+
+  const handleLetsRidePress = () => {
+    if (source === 'BookingStatus') {
+      console.log('Coming from BookingStatus');
+      navigation.navigate('BookingStatus', {source: 'Checkin'});
+    } else {
+      navigation.push('Payment_screen');
+    }
+  };
   return (
     <>
       <StatusBar backgroundColor={'#FFEFD5'} />
       <View style={styles.container}>
+        <View style={styles.pagination}>
+          <ScanPagination />
+        </View>
         <View style={styles.headerContainer}>
           <Svg
             height="100%"
@@ -56,19 +70,17 @@ const QrScanner = ({navigation}: any) => {
           <View style={styles.textContainer}>
             <Text style={styles.title}>Scan to Check In</Text>
             <Text style={styles.description}>
-              Dummy text of the printing and typesetting industry. Lorem Ipsum
-              has been the industry's standard dummy text ever since the 1500s.
+              Ready to ride? Scan now to check in and get going!
             </Text>
           </View>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.nextButton}
-              onPress={() => {
-                navigation.push('Payment_screen');
-              }}>
-              <Text style={styles.buttonText}>Let’s Ride</Text>
+              onPress={handleLetsRidePress}>
+              <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
+            <Text style={styles.buttonText1}>Let's Ride</Text>
           </View>
         </View>
       </View>
@@ -81,9 +93,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  pagination: {
+    width: '98%',
+    marginHorizontal: 5,
+    position: 'absolute',
+    zIndex: 1,
+    top: 80,
+  },
   headerContainer: {
     width: '100%',
-    height: 100, // Adjust height for your design
+    height: 100,
     backgroundColor: '#FFEFD5',
   },
   headerWave: {
@@ -113,16 +132,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: 'black',
     marginBottom: 10,
   },
   description: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#141921',
     textAlign: 'center',
   },
   buttonContainer: {
-    marginTop: 30,
+    marginTop: 20,
     alignItems: 'center',
   },
   nextButton: {
@@ -132,13 +151,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '80%',
+    width: '90%',
     marginBottom: 10,
   },
   buttonText: {
-    color: '#FFF',
+    color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonText1: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   rideText: {
     fontSize: 16,

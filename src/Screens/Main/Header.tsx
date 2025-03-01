@@ -9,8 +9,8 @@ import React from 'react';
 
 import Main_menu from '../../../assests/Main_menu.svg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useOzove } from '../../Context/ozoveContext';
-import { styles } from '../../Components/MainStyles';
+import {useOzove} from '../../Context/ozoveContext';
+import {styles} from '../../Components/MainStyles';
 
 interface HeaderProps {
   navigation: any;
@@ -52,17 +52,18 @@ export default function Header({
         // backgroundColor: 'transparent',
         // height: 120,
         // backgroundColor: 'red',
-        paddingTop: insets.top,
-        paddingHorizontal: 10
-
+        // paddingTop: insets.top,
+        paddingHorizontal: 10,
       }}>
-      <View style={{ flex: 1, }}>
+      <View style={{flex: 1}}>
         <View
-          style={{
-            // flex: 1,
-            // flexDirection: 'row',
-            // justifyContent: 'space-between',
-          }}>
+          style={
+            {
+              // flex: 1,
+              // flexDirection: 'row',
+              // justifyContent: 'space-between',
+            }
+          }>
           <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
             <View
               style={{

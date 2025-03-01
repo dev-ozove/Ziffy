@@ -18,6 +18,7 @@ import PaymentScreen from './Screens/Main/Payment/PaymentScreen';
 import SuccessScreen from './Screens/Main/components/SuccessScreen';
 import Zen_MainScreen from './Screens/Main/Modes/Zenmode/Zen_MainScreen';
 import {useAppSelector} from './hooks/useRedux';
+import BookingStatus from './Screens/Main/BookingStatus';
 
 // Create the necessary navigators
 const Stack = createStackNavigator();
@@ -39,6 +40,8 @@ const MainDrawerNavigator = () => {
       <Drawer.Screen name="Account" component={AccountScreen} />
       <Drawer.Screen name="Help" component={HelpScreen} />
       <Drawer.Screen name="AppSettings" component={AppSettingsScreen} />
+      <Drawer.Screen name="BookingStatus" component={BookingStatus} />
+      <Drawer.Screen name="QRScanner" component={QrScanner} />
     </Drawer.Navigator>
   );
 };

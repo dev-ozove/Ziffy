@@ -106,6 +106,18 @@ export default function MainScreen({navigation}: any) {
     _update_BookingData,
   } = useOzove();
 
+  const [showMessage, setShowMessage] = useState(false);
+
+  useEffect(() => {
+    if (!Bookings?.length) {
+      setShowMessage(true);
+      const timer = setTimeout(() => {
+        setShowMessage(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [Bookings]);
+
   useEffect(() => {
     // Add keyboard event listeners
     const keyboardDidShowListener = Keyboard.addListener(
@@ -695,10 +707,30 @@ export default function MainScreen({navigation}: any) {
             handleLocationSelect={handleLocationSelect}
           />
 
+          {showMessage && (
+            <View
+              style={{
+                borderRadius: 10,
+                width: '80%',
+                height: 50,
+                elevation: 10,
+                backgroundColor: '#FF0000',
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingHorizontal: 20,
+                marginTop: showNextScreen !== 1 ? -580 : -200,
+              }}>
+              <Text style={{color: '#fff', fontWeight: '600', fontSize: 18}}>
+                Booking Cancelled
+              </Text>
+            </View>
+          )}
+
           {/*Conditonal render for the booking components */}
           {!isKeyboardVisible && Bookings?.length > 0 && (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Bookings')}
+              // onPress={() => navigation.navigate('Bookings')}
+              onPress={() => navigation.navigate('BookingStatus')}
               style={{
                 flexDirection: 'row',
                 marginTop: showNextScreen !== 1 ? -580 : -120,
