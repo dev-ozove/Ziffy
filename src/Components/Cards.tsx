@@ -1,6 +1,6 @@
 import {View, Text} from 'react-native';
 import React from 'react';
-import Right_arrow from '../../assests/Refer_card/right_arrow.svg';
+import Right_arrow from '../../assets/Refer_card/right_arrow.svg';
 
 interface CardsProps {
   Icon: any;
@@ -16,10 +16,10 @@ export default function Cards(props: CardsProps) {
         marginVertical: 5,
         height: 120,
         padding: 10,
-        borderRadius: 15,
+        borderRadius: 5,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        backgroundColor: '#333',
+        backgroundColor: '#141921',
       }}>
       <View
         style={{

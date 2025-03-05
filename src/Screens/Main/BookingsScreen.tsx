@@ -12,13 +12,13 @@ import {useNavigation} from '@react-navigation/native';
 import {bookingData} from '../../Context/Types/ozove';
 import {Vechicle_data} from '../../Config/constants';
 
-import BackIcon from '../../../assests/Headers/Backicon.svg';
-import FilterIcon from '../../../assests/Headers/filter.svg';
-import HelpIcon from '../../../assests/Headers/help.svg';
+import BackIcon from '../../../assets/Headers/Backicon.svg';
+import FilterIcon from '../../../assets/Headers/filter.svg';
+import HelpIcon from '../../../assets/Headers/help.svg';
 
-import From_icon from '../../../assests/sidebar/bookings/from_icon.svg';
-import To_icon from '../../../assests/sidebar/bookings/to_icon.svg';
-import Avatar_Icon from '../../../assests/sidebar/bookings/Avatar_icon.svg';
+import From_icon from '../../../assets/sidebar/bookings/from_icon.svg';
+import To_icon from '../../../assets/sidebar/bookings/to_icon.svg';
+import Avatar_Icon from '../../../assets/sidebar/bookings/Avatar_icon.svg';
 
 export default function BookingsScreen() {
   const [activeTab, setActiveTab] = useState('Pending');

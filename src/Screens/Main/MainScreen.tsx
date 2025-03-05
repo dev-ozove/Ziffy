@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -19,9 +19,15 @@ import {
 import MapView, {Marker} from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import Geolocation from '@react-native-community/geolocation';
-import PickupLocationIcon from '../../../assests/Pickup_icon.svg';
+import PickupLocationIcon from '../../../assets/Pickup_icon.svg';
+import ScanIcon from '../../../assets/Scanner/ScanIcon.svg';
 import {useOzove} from '../../Context/ozoveContext';
 import {styles} from '../../Components/MainStyles';
+
+import BottomSheet, {
+  BottomSheetView,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
 
 import RewardsScreen from './components/RewardsScreen';
 
@@ -37,6 +43,8 @@ import AddCardScreen from './components/AddCardScreen';
 import {Additional_services, Vechicle_data} from '../../Config/constants';
 import {Timestamp} from '@react-native-firebase/firestore';
 import {ServiceState} from '../../Context/Types/ozove';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import PaymentMethod from './components/PaymentMethod';
 
 export default function MainScreen({navigation}: any) {
   const Bookings = useAppSelector(state => state.bookings.bookings);
@@ -50,6 +58,7 @@ export default function MainScreen({navigation}: any) {
   const [loading, setLoading] = useState(true);
   const [showNextScreen, setShowNextScreen] = useState<number>(1);
   const [contactDetails, set_contactDetails] = useState();
+  const [showPaymentView, setShowPaymentView] = useState(false);
   const [notes, set_notes] = useState<string>('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -93,6 +102,8 @@ export default function MainScreen({navigation}: any) {
 
   const [passengerCount, setPassengerCount] = useState(1);
   const [TotalPrice, setTotalPrice] = useState(0);
+
+  const bottomSheetRef = useRef(null);
 
   // Import from the Ozove Context functions
   const {
@@ -210,10 +221,10 @@ export default function MainScreen({navigation}: any) {
       case 1:
         return (
           <>
-            <View>
+            <View style={{paddingHorizontal: 10}}>
               <>
-                <View style={{alignSelf: 'flex-start', marginLeft: 20}}>
-                  <Text style={styles.titleText}>Ready to book a ride?</Text>
+                <View style={{alignSelf: 'flex-start'}}>
+                  <Text style={styles.titleText}>Ready To Book A Ride?</Text>
                 </View>
 
                 <View style={styles.inputRow}>
@@ -312,91 +323,136 @@ export default function MainScreen({navigation}: any) {
                 </View>
               </>
             </View>
-            {pickupLocationSuggestions?.latitude &&
-              pickupLocationSuggestions?.longitude &&
-              dropoffLocationSuggestions?.longitude &&
-              dropoffLocationSuggestions?.latitude && (
+            <View
+              style={{
+                bottom: 0,
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 10,
+                paddingHorizontal: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  width: '100%',
+                  elevation: 5,
+                }}
+                onPress={() => {
+                  //setShowNextScreen(showNextScreen + 1);
+                  const formdata = [
+                    {
+                      key: 'From',
+                      value: pickupLocation,
+                    },
+                    {
+                      key: 'To',
+                      value: dropoffLocation,
+                    },
+                    {
+                      key: 'PickupCoordinates.lat',
+                      value: pickupLocationSuggestions?.latitude,
+                    },
+                    {
+                      key: 'DropoffCoordinates.lat',
+                      value: dropoffLocationSuggestions?.latitude,
+                    },
+                    {
+                      key: 'PickupCoordinates.long',
+                      value: pickupLocationSuggestions?.longitude,
+                    },
+                    {
+                      key: 'DropoffCoordinates.long',
+                      value: dropoffLocationSuggestions?.longitude,
+                    },
+
+                    {
+                      key: 'TimeStamp',
+                      value: Timestamp.fromMillis(Date.now()),
+                    },
+                    {
+                      key: 'createdAtDate',
+                      value: new Date().toISOString().split('T')[0],
+                    },
+                  ];
+                  _update_BookingData(formdata);
+                  setShowNextScreen(showNextScreen + 1);
+                }}
+                disabled={
+                  !(
+                    pickupLocationSuggestions?.latitude &&
+                    pickupLocationSuggestions?.longitude &&
+                    dropoffLocationSuggestions?.latitude &&
+                    dropoffLocationSuggestions?.longitude
+                  )
+                }>
                 <View
                   style={{
-                    bottom: 0,
+                    backgroundColor: '#FFAF19',
+                    padding: 10,
+                    borderRadius: 5,
+                    paddingVertical: 10,
                     width: '100%',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    marginBottom: 20,
                   }}>
-                  <TouchableOpacity
+                  <Text
                     style={{
-                      width: '90%',
-                      elevation: 5,
-                    }}
-                    onPress={() => {
-                      //setShowNextScreen(showNextScreen + 1);
-                      const formdata = [
-                        {
-                          key: 'From',
-                          value: pickupLocation,
-                        },
-                        {
-                          key: 'To',
-                          value: dropoffLocation,
-                        },
-                        {
-                          key: 'PickupCoordinates.lat',
-                          value: pickupLocationSuggestions?.latitude,
-                        },
-                        {
-                          key: 'DropoffCoordinates.lat',
-                          value: dropoffLocationSuggestions?.latitude,
-                        },
-                        {
-                          key: 'PickupCoordinates.long',
-                          value: pickupLocationSuggestions?.longitude,
-                        },
-                        {
-                          key: 'DropoffCoordinates.long',
-                          value: dropoffLocationSuggestions?.longitude,
-                        },
-
-                        {
-                          key: 'TimeStamp',
-                          value: Timestamp.fromMillis(Date.now()),
-                        },
-                        {
-                          key: 'createdAtDate',
-                          value: new Date().toISOString().split('T')[0],
-                        },
-                      ];
-                      _update_BookingData(formdata);
-                      setShowNextScreen(showNextScreen + 1);
+                      fontFamily: 'DMSans36pt-ExtraBold',
+                      color: '#141921',
+                      fontSize: 24,
                     }}>
-                    <View
-                      style={{
-                        backgroundColor: '#FFAF19',
-                        padding: 10,
-                        borderRadius: 12,
-                        paddingVertical: 20,
-                        width: '100%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <Text
-                        style={{
-                          color: '#333',
-                          fontSize: 20,
-                          fontWeight: 'bold',
-                        }}>
-                        {'Next'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                    {'Next'}
+                  </Text>
                 </View>
-              )}
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                bottom: 0,
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 10,
+                paddingHorizontal: 10,
+              }}>
+              <TouchableOpacity
+                style={{
+                  width: '100%',
+                  elevation: 5,
+                }}>
+                <View
+                  style={{
+                    backgroundColor: '#141921',
+                    padding: 10,
+                    borderRadius: 5,
+                    paddingVertical: 10,
+                    width: '100%',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'DMSans36pt-ExtraBold',
+                      fontSize: 24,
+                      color: '#fff',
+                      marginRight: 10,
+                    }}>
+                    {'Scan'}
+                  </Text>
+                  <ScanIcon />
+                </View>
+              </TouchableOpacity>
+            </View>
             <RewardsScreen />
           </>
         );
       case 2:
         return (
           <>
+            <View style={{alignSelf: 'flex-start', paddingHorizontal: 10}}>
+              <Text style={styles.titleText}>Ready To Book A Ride?</Text>
+            </View>
             <BookingInputScreen
               showNextScreen={showNextScreen}
               setShowNextScreen={setShowNextScreen}
@@ -433,7 +489,7 @@ export default function MainScreen({navigation}: any) {
                 }}>
                 <TouchableOpacity
                   style={{
-                    width: '90%',
+                    width: '94%',
                     elevation: 5,
                   }}
                   onPress={() => {
@@ -467,8 +523,8 @@ export default function MainScreen({navigation}: any) {
                     style={{
                       backgroundColor: '#FFAF19',
                       padding: 10,
-                      borderRadius: 12,
-                      paddingVertical: 20,
+                      borderRadius: 5,
+                      paddingVertical: 12,
                       width: '100%',
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -490,79 +546,89 @@ export default function MainScreen({navigation}: any) {
       case 3:
         return (
           <>
-            <BookingDescription
-              contactDetails={contactDetails}
-              set_contactDetails={set_contactDetails}
-              showNextScreen={showNextScreen}
-              setShowNextScreen={setShowNextScreen}
-              notes={notes}
-              set_notes={set_notes}
-              selectedVehicle={selectedVehicle}
-              setPassenger_Count={setPassengerCount}
-              passenger_Count={passengerCount}
-            />
-
-            {contactDetails !== '' ? (
-              <View
-                style={{
-                  bottom: 0,
-                  width: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: 20,
-                }}>
-                <TouchableOpacity
-                  style={{
-                    width: '90%',
-                    elevation: 5,
-                  }}
-                  onPress={() => {
-                    //setShowNextScreen(showNextScreen + 1);
-                    const formdata = [
-                      {
-                        key: 'contactDetails',
-                        value: contactDetails,
-                      },
-                      {
-                        key: 'driverNote',
-                        value: notes,
-                      },
-                      {
-                        key: 'PassengerCount',
-                        value: passengerCount || 1,
-                      },
-                    ];
-                    _update_BookingData(formdata);
-                    setShowNextScreen(showNextScreen + 1);
-                  }}>
-                  <View
-                    style={{
-                      backgroundColor: '#FFAF19',
-                      padding: 10,
-                      borderRadius: 12,
-                      paddingVertical: 20,
-                      width: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        color: '#333',
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                      }}>
-                      {'Review Booking'}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={{color: 'red'}}>
-                  {'Please enter contact details'}
-                </Text>
-              </View>
+            {!showPaymentView && (
+              <BookingDescription
+                setShowPaymentView={setShowPaymentView}
+                contactDetails={contactDetails}
+                set_contactDetails={set_contactDetails}
+                showNextScreen={showNextScreen}
+                setShowNextScreen={setShowNextScreen}
+                notes={notes}
+                set_notes={set_notes}
+                selectedVehicle={selectedVehicle}
+                setPassenger_Count={setPassengerCount}
+                passenger_Count={passengerCount}
+              />
             )}
+
+            {showPaymentView && (
+              <PaymentMethod setShowPaymentView={setShowPaymentView} />
+            )}
+
+            {/* {!showPaymentView && ( */}
+
+            {!showPaymentView &&
+              (contactDetails !== '' ? (
+                <View
+                  style={{
+                    bottom: 0,
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: 20,
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      width: '94%',
+                      elevation: 5,
+                    }}
+                    onPress={() => {
+                      //setShowNextScreen(showNextScreen + 1);
+                      const formdata = [
+                        {
+                          key: 'contactDetails',
+                          value: contactDetails,
+                        },
+                        {
+                          key: 'driverNote',
+                          value: notes,
+                        },
+                        {
+                          key: 'PassengerCount',
+                          value: passengerCount || 1,
+                        },
+                      ];
+                      _update_BookingData(formdata);
+                      setShowNextScreen(showNextScreen + 1);
+                    }}>
+                    <View
+                      style={{
+                        backgroundColor: '#FFAF19',
+                        padding: 10,
+                        borderRadius: 5,
+                        paddingVertical: 14,
+                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          color: '#333',
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                        }}>
+                        {'Review Booking'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <Text style={{color: 'red'}}>
+                    {'Please enter contact details'}
+                  </Text>
+                </View>
+              ))}
           </>
         );
       case 4:
@@ -647,6 +713,13 @@ export default function MainScreen({navigation}: any) {
     }
   };
 
+  const snapPoints = useMemo(() => {
+    if (showNextScreen !== 1) {
+      return showNextScreen === 3 ? ['60%', '80%'] : ['60%', '80%'];
+    }
+    return ['60%'];
+  }, [showNextScreen]);
+
   return (
     <>
       <StripeProvider publishableKey={stripePublicKey}>
@@ -701,11 +774,90 @@ export default function MainScreen({navigation}: any) {
           )}
 
           {/*Condition to render the header and search bar on the top */}
+          <View style={styles.profileButton}>
+            <Header
+              navigation={navigation}
+              handleLocationSelect={handleLocationSelect}
+            />
+          </View>
 
-          <Header
-            navigation={navigation}
-            handleLocationSelect={handleLocationSelect}
-          />
+          {showDatePicker && (
+            <View>
+              <DateTimePickerModal
+                isVisible={showDatePicker}
+                mode="date"
+                onConfirm={selectedDate => {
+                  setShowDatePicker(false);
+                  setDate(selectedDate);
+                }}
+                onCancel={() => setShowDatePicker(false)}
+                pickerContainerStyleIOS={{
+                  backgroundColor: 'white',
+                  paddingBottom: 10,
+                  borderRadius: 5,
+                }}
+                customHeaderIOS={() => (
+                  <View
+                    style={{
+                      padding: 16,
+                      alignItems: 'flex-start',
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#ccc',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontFamily: 'DMSans36pt-SemiBold',
+                        color: '#141921',
+                      }}>
+                      Schedule Ride
+                    </Text>
+                  </View>
+                )}
+                customConfirmButtonIOS={({onPress}) => (
+                  <TouchableOpacity
+                    onPress={onPress}
+                    style={{
+                      backgroundColor: '#FFAF19',
+                      padding: 14,
+                      borderRadius: 5,
+                      alignItems: 'center',
+                      marginHorizontal: 10,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontFamily: 'DMSans36pt-SemiBold',
+                        color: '#141921',
+                      }}>
+                      Schedule
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                customCancelButtonIOS={({onPress}) => (
+                  <TouchableOpacity
+                    onPress={onPress}
+                    style={{
+                      backgroundColor: '#141921',
+                      padding: 14,
+                      borderRadius: 5,
+                      alignItems: 'center',
+                      marginHorizontal: 10,
+                      marginBottom: 20,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontFamily: 'DMSans36pt-SemiBold',
+                        color: '#fff',
+                      }}>
+                      Cancel
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )}
 
           {showMessage && (
             <View
@@ -733,7 +885,7 @@ export default function MainScreen({navigation}: any) {
               onPress={() => navigation.navigate('BookingStatus')}
               style={{
                 flexDirection: 'row',
-                marginTop: showNextScreen !== 1 ? -580 : -120,
+                marginTop: showNextScreen !== 1 ? -560 : -120,
                 margin: 20,
               }}>
               <View
@@ -759,8 +911,9 @@ export default function MainScreen({navigation}: any) {
               </View>
             </TouchableOpacity>
           )}
+
           {/* Action Sheet */}
-          <Animated.View
+          {/* <Animated.View
             style={[
               styles.actionSheet,
               {
@@ -775,10 +928,24 @@ export default function MainScreen({navigation}: any) {
             <View style={styles.sheetHandle} />
 
             {/* Scrollable Content */}
-            <ScrollView contentContainerStyle={styles.sheetContent}>
+          {/* <ScrollView contentContainerStyle={styles.sheetContent}>
               {renderComponent()}
-            </ScrollView>
-          </Animated.View>
+            </ScrollView> */}
+          {/* </Animated.View>  */}
+          <BottomSheet
+            ref={bottomSheetRef}
+            snapPoints={snapPoints}
+            enablePanDownToClose={false}
+            enableContentPanningGesture={true}
+            enableOverDrag={false}
+            style={{marginTop: 180}}>
+            <BottomSheetView style={styles.sheetContainer}>
+              <BottomSheetScrollView
+                contentContainerStyle={styles.sheetContent}>
+                {renderComponent()}
+              </BottomSheetScrollView>
+            </BottomSheetView>
+          </BottomSheet>
         </View>
       </StripeProvider>
     </>

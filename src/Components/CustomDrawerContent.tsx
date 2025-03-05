@@ -6,10 +6,10 @@ import {useAppSelector} from '../hooks/useRedux';
 import {getAuth} from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import Bookings from '../../assests/sidebar/Bookings.svg';
-import Contact from '../../assests/sidebar/Contacts.svg';
-import Settings from '../../assests/sidebar/Settings.svg';
-import Signout from '../../assests/sidebar/Sign_out.svg';
+import Bookings from '../../assets/sidebar/Bookings.svg';
+import Contact from '../../assets/sidebar/Contacts.svg';
+import Settings from '../../assets/sidebar/Settings.svg';
+import Signout from '../../assets/sidebar/Sign_out.svg';
 
 const CustomDrawerContent = (props: any) => {
   const user = useAppSelector(state => state.user.user);

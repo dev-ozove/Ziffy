@@ -6,8 +6,8 @@ import React, {
   useEffect,
 } from 'react';
 import firestore from '@react-native-firebase/firestore';
-import { useDispatch } from 'react-redux';
-import { clearBookings, setBookings } from '../Redux/Features/BookingsSlice';
+import {useDispatch} from 'react-redux';
+import {clearBookings, setBookings} from '../Redux/Features/BookingsSlice';
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -16,11 +16,11 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import { clearUser, setUser } from '../Redux/Features/UserSlice';
+import {clearUser, setUser} from '../Redux/Features/UserSlice';
 import axios from 'axios';
 import BackendConstants from '../Config/Config';
-import { useAppSelector } from '../hooks/useRedux';
-import { Platform } from 'react-native';
+import {useAppSelector} from '../hooks/useRedux';
+import {Platform} from 'react-native';
 
 interface AuthContextType {
   // Existing properties
@@ -29,7 +29,7 @@ interface AuthContextType {
   check_for_user: (
     email: string | null,
   ) => Promise<
-    { email?: string; userType?: string; deviceDetails?: any } | undefined
+    {email?: string; userType?: string; deviceDetails?: any} | undefined
   >;
   userType: string;
   userDeviceTheme: any;
@@ -60,7 +60,7 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
   const check_for_user = (
     email: string | null,
   ): Promise<
-    { email?: string; userType?: string; deviceDetails?: any } | undefined
+    {email?: string; userType?: string; deviceDetails?: any} | undefined
   > => {
     return new Promise((resolve, reject) => {
       if (!email) {
@@ -93,7 +93,7 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
             console.log('No such document!');
             // If no document, assume customer (or driver) user type.
             set_userType('customer');
-            resolve({ userType: 'customer' });
+            resolve({userType: 'customer'});
             return;
           }
           resolve(undefined);
@@ -132,14 +132,13 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
     GoogleSignin.configure({
       offlineAccess: false,
       webClientId:
-        Platform.OS == "android" ?
-          '127159368329-5r68a6lto3ukpmapnmn8tpmqcr0d6h7l.apps.googleusercontent.com' :
-          '127159368329-q9qde6uvp2ft0tiks11p24q6hi8nhhlh.apps.googleusercontent.com'
-
+        Platform.OS == 'android'
+          ? '127159368329-5r68a6lto3ukpmapnmn8tpmqcr0d6h7l.apps.googleusercontent.com'
+          : '127159368329-q9qde6uvp2ft0tiks11p24q6hi8nhhlh.apps.googleusercontent.com',
     });
   }, []);
 
-  const register_backend = async ({ userInfo }: { userInfo: any }) => {
+  const register_backend = async ({userInfo}: {userInfo: any}) => {
     try {
       const response = await axios.post(`${BackendConstants.Url}/register`, {
         name: userInfo?.user?.displayName,
@@ -185,7 +184,7 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
     try {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
-      const { data } = await GoogleSignin.signIn();
+      const {data} = await GoogleSignin.signIn();
       if (data?.idToken) {
         const credential = auth.GoogleAuthProvider.credential(data.idToken);
 
@@ -200,7 +199,7 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
                 userType: details?.userType || userType,
                 deviceDetails: details?.deviceDetails || userDeviceTheme,
               };
-              register_backend({ userInfo: finalUserInfo });
+              register_backend({userInfo: finalUserInfo});
             } catch (error) {
               console.log(error);
             }

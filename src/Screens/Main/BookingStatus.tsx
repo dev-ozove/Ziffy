@@ -193,7 +193,7 @@ const BookingStatus = ({route}: any) => {
           {showStartRide && (
             <Marker coordinate={carPosition}>
               <Image
-                source={require('../../../assests/DriverProfile/Car.png')}
+                source={require('../../../assets/DriverProfile/Car.png')}
                 style={{width: 60, height: 60, resizeMode: 'contain'}}
               />
             </Marker>

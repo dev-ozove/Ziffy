@@ -3,13 +3,14 @@ import React from 'react';
 import Cards from '../../../Components/Cards';
 import Cards1 from '../../../Components/Cards1';
 
-import Refer_Logo from '../../../../assests/Refer_card/refer_logo.svg';
-import Refer_Icon from '../../../../assests/Refer_card/card_car_icon.svg';
-import On_Demand from '../../../../assests/Refer_card/On_demand_icon.svg';
-import Promos from '../../../../assests/Refer_card/Promos.svg';
-import Saftey from '../../../../assests/Refer_card/Saftey.svg';
-import Ready from '../../../../assests/Refer_card/Ready.svg';
-import Addvertisment_icon from '../../../../assests/Addvertisment/Addvertisment_icon.svg';
+import Refer_Logo from '../../../../assets/Refer_card/refer_logo.svg';
+import Refer_Icon from '../../../../assets/Refer_card/card_car_icon.svg';
+import On_Demand from '../../../../assets/Refer_card/On_demand_icon.svg';
+import Promos from '../../../../assets/Refer_card/Promos.svg';
+import Saftey from '../../../../assets/Refer_card/Saftey.svg';
+import Ready from '../../../../assets/Refer_card/Ready.svg';
+import Addvertisment_icon from '../../../../assets/Addvertisment/Addvertisment_icon.svg';
+import PaginationIcon from '../../../../assets/Scanner/PaginationIcon.svg';
 
 export default function RewardsScreen() {
   return (
@@ -20,7 +21,7 @@ export default function RewardsScreen() {
           width: '100%',
           borderWidth: 1,
           borderColor: '#ccc',
-          borderRadius: 12,
+          borderRadius: 5,
           backgroundColor: '#fff',
           elevation: 1,
           flexDirection: 'row',
@@ -34,9 +35,10 @@ export default function RewardsScreen() {
           <View style={{margin: 5}}>
             <Text
               style={{
+                fontFamily: 'DMSans36pt-ExtraBold',
                 color: '#000',
-                fontWeight: 'bold',
                 fontSize: 20,
+                marginBottom: 10,
               }}>
               Refer and Earn !
             </Text>
@@ -46,14 +48,14 @@ export default function RewardsScreen() {
                   color: '#000',
                   fontWeight: 400,
                 }}>
-                Invite Your Friends to try OZ Ove Get Upto $15 cashback
+                Invite Your Friends to try OZ Ove {'\n'}Get Upto $15 cashback
               </Text>
             </View>
             <View style={{marginTop: 10}}>
               <Text
                 style={{
                   color: '#000',
-                  fontWeight: 'bold',
+                  fontFamily: 'DMSans36pt-SemiBold',
                   fontSize: 16,
                 }}>
                 Share invite code{' '}
@@ -69,10 +71,10 @@ export default function RewardsScreen() {
                 backgroundColor: '#E7EAEC',
                 margin: 5,
                 textAlign: 'center',
-                borderRadius: 10,
+                borderRadius: 5,
                 color: '#767676',
               }}>
-              OZ M48OVE
+              ZI M48OVE
             </Text>
           </View>
           <View style={{flex: 1}}>
@@ -81,6 +83,9 @@ export default function RewardsScreen() {
         </View>
       </View>
 
+      <View style={{alignSelf: 'center', marginTop: 10}}>
+        <PaginationIcon />
+      </View>
       <View
         style={{
           flex: 1,
@@ -133,9 +138,9 @@ export default function RewardsScreen() {
           marginVertical: 20,
           flexDirection: 'row',
           height: 150,
-          borderRadius: 15,
-          borderWidth: 2,
-          borderColor: '#FFAF19',
+          borderRadius: 5,
+          // borderWidth: 2,
+          // borderColor: '#FFAF19',
           elevation: 5,
           backgroundColor: '#FFEFD1',
         }}>

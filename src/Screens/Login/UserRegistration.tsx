@@ -1,8 +1,15 @@
-import {View, Text, ActivityIndicator, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useState} from 'react';
-import Profile_Icon from '../../../assests/Profile_Icon.svg';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import Profile_Icon from '../../../assets/Profile_Icon.svg';
+// import {TouchableOpacity} from 'react-native-gesture-handler';
 import InputField from '../../Components/InputField';
+import BackIcon from '../../../assets/Headers/Backicon.svg';
 
 import axios from 'axios';
 import BackendConstants from '../../Config/Config';
@@ -80,21 +87,36 @@ export default function UserRegistration({navigation}: any) {
     <View
       style={{
         flex: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
       }}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{position: 'absolute', top: 80, left: 20}}>
+        <BackIcon />
+      </TouchableOpacity>
       <View
         style={{
-          marginTop: 20,
+          marginTop: 110,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text style={{color: '#333', fontSize: 28, fontWeight: 'bold'}}>
+        <Text
+          style={{
+            color: '#141921',
+            fontFamily: 'DMSans36pt-ExtraBold',
+            fontSize: 28,
+          }}>
           Account Info
         </Text>
         <View style={{width: '60%', marginTop: 5}}>
-          <Text style={{color: '#000'}}>
+          <Text
+            style={{
+              color: '#333333',
+              fontFamily: 'DMSans36pt-Medium',
+              fontSize: 16,
+            }}>
             Please enter your email & name so our drivers can confirm your ride.
           </Text>
         </View>
@@ -104,7 +126,11 @@ export default function UserRegistration({navigation}: any) {
       <View
         style={{marginTop: 10, justifyContent: 'center', alignItems: 'center'}}>
         <TouchableOpacity
-          style={{justifyContent: 'center', alignItems: 'center'}}>
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 20,
+          }}>
           <View
             style={{
               width: 100,
@@ -116,7 +142,15 @@ export default function UserRegistration({navigation}: any) {
             }}>
             <Profile_Icon />
           </View>
-          <Text style={{color: '#767676'}}>Upload Image</Text>
+          <Text
+            style={{
+              marginTop: 10,
+              color: '#767676',
+              fontFamily: 'DMSans36pt-Medium',
+              fontSize: 14,
+            }}>
+            Upload Image
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -125,29 +159,59 @@ export default function UserRegistration({navigation}: any) {
         <View style={{flex: 1, margin: 20}}>
           <InputField
             label="First name"
+            labelstyle={{
+              fontSize: 18,
+              color: '#333333',
+              fontFamily: 'DMSans36pt-SemiBold',
+            }}
             placeholder="Enter your first name"
             value={firstName}
             onChangeText={setFirstName}
           />
           <InputField
             label="Last name"
+            labelstyle={{
+              fontSize: 18,
+              color: '#333333',
+              fontFamily: 'DMSans36pt-SemiBold',
+            }}
             placeholder="Enter your Last name"
             value={lastName}
             onChangeText={setLastName}
           />
           <InputField
             label="Your email address"
+            labelstyle={{
+              fontSize: 18,
+              color: '#333333',
+              fontFamily: 'DMSans36pt-SemiBold',
+            }}
             placeholder="Enter your Last name"
             value={email}
             onChangeText={set_email}
           />
+          <Text
+            style={{
+              color: '#767676',
+              fontFamily: 'DMSans36pt-Medium',
+              fontSize: 15,
+            }}>
+            We will send your reports to this email address
+          </Text>
+
           <InputField
             label="Date of Birth"
+            labelstyle={{
+              fontSize: 18,
+              color: '#333333',
+              fontFamily: 'DMSans36pt-SemiBold',
+            }}
             placeholder="Enter date of birth"
             value={dateOfBirth}
             onChangeText={setDateOfBirth}
             isDate={true} // Enable date picker for this field
           />
+
           <TouchableOpacity
             onPress={handleSave}
             style={{
@@ -161,7 +225,12 @@ export default function UserRegistration({navigation}: any) {
             {loading ? (
               <ActivityIndicator size={'large'} color={'#333'} />
             ) : (
-              <Text style={{color: '#333', fontSize: 20, fontWeight: 600}}>
+              <Text
+                style={{
+                  color: '#333333',
+                  fontSize: 20,
+                  fontFamily: 'DMSans36pt-SemiBold',
+                }}>
                 Done
               </Text>
             )}

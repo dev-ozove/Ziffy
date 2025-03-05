@@ -13,10 +13,13 @@ import {
 } from 'react-native';
 import React, {useMemo, useState} from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import BackIcon from '../../../../assests/back_icon.svg';
-import Phone_Icon from '../../../../assests/sidebar/Contacts.svg';
+import BackIcon from '../../../../assets/back_icon.svg';
+import Phone_Icon from '../../../../assets/sidebar/Contacts.svg';
 import {styles} from '../../../Components/MainStyles';
-import PickupLocationIcon from '../../../../assests/Pickup_icon.svg';
+import PickupLocationIcon from '../../../../assets/Pickup_icon.svg';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Avatar from '../../../../assets/Avatar.svg';
+import Icon1 from 'react-native-vector-icons/Ionicons';
 
 import {getAuth} from '@react-native-firebase/auth';
 import {Booking, VehicleData} from '../../../Context/Types/ozove';
@@ -70,6 +73,7 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
 }) => {
   const {bookingData} = useOzove();
   const [localLoading, set_localLoading] = useState(false);
+  const [passengerCount, setPassengerCount] = useState('25');
   const {_handleBooking, _update_BookingData} = useOzove();
   const auth = getAuth();
   const navigation = useNavigation<any>();
@@ -178,7 +182,12 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
 
   return (
     <>
-      <View style={{justifyContent: 'center', alignItems: 'flex-start'}}>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          paddingHorizontal: 5,
+        }}>
         <TouchableOpacity
           onPress={() => {
             setShowNextScreen(showNextScreen - 1);
@@ -189,28 +198,45 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
         </TouchableOpacity>
         <ScrollView style={{width: '100%', marginBottom: 10}}>
           <View style={{marginBottom: 10}}>
-            <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+            <Text
+              style={{
+                fontFamily: 'DMSans36pt-ExtraBold',
+                color: '#141921',
+                fontSize: 24,
+              }}>
               Review Booking
             </Text>
           </View>
+          <Text style={{marginVertical: 2, fontSize: 13, fontWeight: '700'}}>
+            14-Jan-2023 16:32
+          </Text>
+          <Text style={{fontSize: 13, color: '#F8AB1E', fontWeight: '700'}}>
+            Order# <Text style={{color: '#F8AB1E'}}>zen4587</Text>
+          </Text>
           {/*Pickup and destinaiton Location */}
-          <View style={{width: '100%'}}>
-            <View style={{marginLeft: 6, marginBottom: 24, gap: 16}}>
+          <View style={{width: '100%', marginTop: 10}}>
+            <View style={{marginBottom: 10, gap: 10}}>
               {/* Pickup Location */}
               <View
                 style={{
                   flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
+                  paddingHorizontal: 5,
+                  paddingVertical: 14,
                   backgroundColor: '#F0F0F0',
-                  borderWidth: 1,
-                  borderRadius: 10,
+                  borderRadius: 5,
                   borderColor: '#ccc',
                 }}>
                 <PickupLocationIcon />
 
                 <Text
-                  style={{color: '#141921', fontWeight: 'bold', width: '95%'}}>
+                  style={{
+                    color: '#141921',
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    width: '80%',
+                    marginHorizontal: 5,
+                    marginRight: 5,
+                  }}>
                   {bookingData?.From}
                 </Text>
               </View>
@@ -219,16 +245,22 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
               <View
                 style={{
                   flexDirection: 'row',
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
+                  paddingHorizontal: 5,
+                  paddingVertical: 14,
                   backgroundColor: '#F0F0F0',
-                  borderWidth: 1,
-                  borderRadius: 10,
+                  borderRadius: 5,
                   borderColor: '#ccc',
                 }}>
                 <PickupLocationIcon />
                 <Text
-                  style={{color: '#141921', fontWeight: 'bold', width: '95%'}}>
+                  style={{
+                    color: '#141921',
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    width: '80%',
+                    marginHorizontal: 5,
+                    marginRight: 10,
+                  }}>
                   {bookingData?.To}
                 </Text>
               </View>
@@ -240,11 +272,10 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
             <View
               style={{
                 width: 140,
-                height: 140,
+                height: 130,
                 justifyContent: 'center',
                 alignItems: 'center',
-                borderRadius: 12,
-                marginHorizontal: 10,
+                borderRadius: 5,
                 backgroundColor: '#ffae194e',
                 borderWidth: 1,
                 borderColor: '#FFAF19',
@@ -277,9 +308,9 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                   <View style={{marginLeft: 10}}>
                     <Text
                       style={{
-                        color: '#4A4A4A',
+                        color: '#000',
+                        fontFamily: 'DMSans36pt-SemiBold',
                         fontSize: 14,
-                        fontWeight: 600,
                       }}>
                       {Vechicle_data[selectedVehicle || 0]?.title}
                     </Text>
@@ -301,15 +332,16 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                     <Text
                       style={{
                         color: 'green',
-                        fontWeight: 'bold',
-                        fontSize: 12,
+                        fontFamily: 'DMSans36pt-SemiBold',
+                        fontSize: 14,
                       }}>
                       From
                     </Text>
                     <Text
                       style={{
-                        color: '#333',
-                        fontSize: 12,
+                        color: '#141921',
+                        fontFamily: 'DMSans36pt-SemiBold',
+                        fontSize: 14,
                         paddingHorizontal: 5,
                       }}>
                       $
@@ -332,17 +364,29 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
               marginTop: 10,
               padding: 20,
               width: '100%',
-              borderRadius: 12,
+              borderRadius: 8,
               backgroundColor: '#ffae194e',
             }}>
             <View style={{width: '70%', flexDirection: 'column'}}>
               <View>
-                <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                  Cancilation Policy{' '}
+                <Text
+                  style={{
+                    color: '#141921',
+                    fontFamily: 'DMSans36pt-SemiBold',
+                    fontSize: 14,
+                    marginBottom: 4,
+                  }}>
+                  Cancilation Policy
                 </Text>
               </View>
               <View>
-                <Text>
+                <Text
+                  style={{
+                    fontFamily: 'DMSans36pt-Regular',
+                    fontSize: 10,
+                    width: '80%',
+                    color: '#141921',
+                  }}>
                   Cancellations made seven days or less before a trip are not
                   eligible for a refund
                 </Text>
@@ -377,54 +421,78 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
             </View>
           </View>
 
+          <View
+            style={{
+              borderWidth: 1,
+              padding: 8,
+              borderRadius: 5,
+              borderColor: '#ccc',
+              marginTop: 10,
+            }}>
+            <Text
+              style={{
+                fontFamily: 'DMSans36pt-SemiBold',
+                fontSize: 20,
+                marginBottom: 5,
+                color: '#141921',
+              }}>
+              Total Passengers
+            </Text>
+            <TextInput
+              style={{fontSize: 16, fontWeight: '400'}}
+              value={passengerCount}
+              onChangeText={text => setPassengerCount(text)}
+              keyboardType="numeric"
+              editable={true}
+            />
+          </View>
+
           {/*Price Breakdown */}
           <View
             style={{
-              marginVertical: 20,
+              marginVertical: 10,
               borderWidth: 1,
-              borderRadius: 12,
-              borderColor: '#4E4E4C',
+              borderRadius: 5,
+              borderColor: '#ccc',
               padding: 10,
             }}>
             <View>
               <Text
                 style={{
+                  fontFamily: 'DMSans36pt-SemiBold',
                   fontSize: 20,
-                  fontWeight: 'bold',
-                  color: '#4E4E4C',
+                  color: '#141921',
                 }}>
                 Price Breakdown
               </Text>
               <View style={{flex: 2, flexDirection: 'row'}}>
-                <View style={{flex: 3}}>
+                <View style={{flex: 6}}>
                   {/* Base Price Section */}
                   <Text
                     style={{
-                      fontSize: 16,
-                      color: '#4E4E4C',
                       marginTop: 5,
-                      marginBottom: 10,
-                      fontWeight: '500',
+                      marginBottom: 4,
+                      fontFamily: 'DMSans36pt-Regular',
+                      fontSize: 12,
+                      color: '#141921',
                     }}>
                     Distance
                   </Text>
                   <Text
                     style={{
-                      fontSize: 16,
-                      color: '#4E4E4C',
-                      marginTop: 5,
-                      marginBottom: 10,
-                      fontWeight: '500',
+                      marginBottom: 4,
+                      fontFamily: 'DMSans36pt-Regular',
+                      fontSize: 12,
+                      color: '#141921',
                     }}>
                     Base Fee
                   </Text>
                   <Text
                     style={{
-                      fontSize: 16,
-                      color: '#4E4E4C',
-                      marginTop: 5,
-                      marginBottom: 10,
-                      fontWeight: '500',
+                      marginBottom: 4,
+                      fontFamily: 'DMSans36pt-Regular',
+                      fontSize: 12,
+                      color: '#141921',
                     }}>
                     Distance Charge
                   </Text>
@@ -433,33 +501,30 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                   {additionalCosts.extraVehicles.count > 0 && (
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: '#4E4E4C',
-                        marginTop: 5,
-                        marginBottom: 10,
-                        fontWeight: '500',
+                        marginBottom: 4,
+                        fontFamily: 'DMSans36pt-Regular',
+                        fontSize: 12,
+                        color: '#141921',
                       }}>{`Additional Vehicles (${additionalCosts.extraVehicles.count})`}</Text>
                   )}
 
                   {additionalCosts.hourlyBooking.hours > 0 && (
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: '#4E4E4C',
-                        marginTop: 5,
-                        marginBottom: 10,
-                        fontWeight: '500',
+                        marginBottom: 4,
+                        fontFamily: 'DMSans36pt-Regular',
+                        fontSize: 12,
+                        color: '#141921',
                       }}>{`Hourly Booking (${additionalCosts.hourlyBooking.hours} hrs)`}</Text>
                   )}
 
                   {additionalCosts.splitPayment.enabled && (
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: '#4E4E4C',
-                        marginTop: 5,
-                        marginBottom: 10,
-                        fontWeight: '500',
+                        marginBottom: 4,
+                        fontFamily: 'DMSans36pt-Regular',
+                        fontSize: 12,
+                        color: '#141921',
                       }}>
                       Split Payment Fee
                     </Text>
@@ -467,50 +532,55 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
 
                   <Text
                     style={{
-                      fontSize: 16,
-                      fontWeight: 'bold',
+                      fontFamily: 'DMSans36pt-SemiBold',
+                      fontSize: 20,
                       color: '#FFAF19',
-                      marginTop: 10,
+                      marginTop: 8,
                     }}>
-                    Grand Total
+                    Total Amount Per Person
                   </Text>
                 </View>
                 <View
                   style={{flex: 2, paddingLeft: 50, alignItems: 'flex-start'}}>
                   <Text
                     style={{
-                      fontSize: 16,
-                      color: '#4E4E4C',
-                      marginTop: 5,
-                      marginBottom: 10,
+                      marginTop: 4,
+                      marginBottom: 4,
+                      marginLeft: 18,
+                      fontFamily: 'DMSans36pt-Regular',
+                      fontSize: 12,
+                      color: '#141921',
                     }}>{`${parseFloat(distance || 0).toFixed(2)} Km`}</Text>
 
                   <Text
                     style={{
-                      fontSize: 16,
-                      color: '#4E4E4C',
-                      marginTop: 5,
-                      marginBottom: 10,
+                      marginBottom: 4,
+                      marginLeft: 18,
+                      fontFamily: 'DMSans36pt-Regular',
+                      fontSize: 12,
+                      color: '#141921',
                     }}>{`$ ${parseFloat(
                     Selected_vechile_pricing?.minimumFare || 0,
                   ).toFixed(2)}`}</Text>
 
                   <Text
                     style={{
-                      fontSize: 16,
-                      color: '#4E4E4C',
-                      marginTop: 5,
-                      marginBottom: 10,
+                      marginBottom: 4,
+                      marginLeft: 18,
+                      fontFamily: 'DMSans36pt-Regular',
+                      fontSize: 12,
+                      color: '#141921',
                     }}>{`$ ${distanceCharge.toFixed(2)}`}</Text>
 
                   {/* Additional Features Costs */}
                   {additionalCosts.extraVehicles.count > 0 && (
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: '#4E4E4C',
-                        marginTop: 5,
-                        marginBottom: 10,
+                        marginBottom: 4,
+                        marginLeft: 18,
+                        fontFamily: 'DMSans36pt-Regular',
+                        fontSize: 12,
+                        color: '#141921',
                       }}>{`$ ${additionalCosts.extraVehicles.cost.toFixed(
                       2,
                     )}`}</Text>
@@ -519,10 +589,11 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                   {additionalCosts.hourlyBooking.hours > 0 && (
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: '#4E4E4C',
-                        marginTop: 5,
-                        marginBottom: 10,
+                        marginBottom: 4,
+                        marginLeft: 18,
+                        fontFamily: 'DMSans36pt-Regular',
+                        fontSize: 12,
+                        color: '#141921',
                       }}>{`$ ${additionalCosts.hourlyBooking.cost.toFixed(
                       2,
                     )}`}</Text>
@@ -531,10 +602,11 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                   {additionalCosts.splitPayment.enabled && (
                     <Text
                       style={{
-                        fontSize: 16,
-                        color: '#4E4E4C',
-                        marginTop: 5,
-                        marginBottom: 10,
+                        marginBottom: 4,
+                        marginLeft: 18,
+                        fontFamily: 'DMSans36pt-Regular',
+                        fontSize: 12,
+                        color: '#141921',
                       }}>
                       $ 30.00
                     </Text>
@@ -542,34 +614,71 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
 
                   <Text
                     style={{
-                      fontSize: 16,
-                      fontWeight: 'bold',
+                      fontFamily: 'DMSans36pt-SemiBold',
+                      fontSize: 18,
                       color: '#FFAF19',
-                      marginTop: 10,
+                      marginTop: 8,
                     }}>{`$ ${grandTotal.toFixed(2)}`}</Text>
                 </View>
               </View>
             </View>
           </View>
 
+          <TouchableOpacity
+            style={styles.card}
+            // onPress={() => setShowPaymentView(true)}
+            activeOpacity={0.7}>
+            <Text style={styles.header}>Payment Method</Text>
+            <View style={styles.row}>
+              <View style={styles.iconContainer1}>
+                <Avatar />
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={styles.personalText}>Personal</Text>
+                <Text style={styles.cardText}>Visa 0493</Text>
+              </View>
+              <Icon name="chevron-right" size={24} color="#868886" />
+            </View>
+          </TouchableOpacity>
+
           <View
             style={{
               padding: 15,
               borderRadius: 10,
               flexDirection: 'row',
-              borderWidth: 2,
-              borderColor: '#FFAF19',
+              borderWidth: 1,
+              borderColor: '#ccc',
             }}>
             <View style={{flex: 1}}>
-              <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+              <Text style={{fontFamily: 'DMSans36pt-SemiBold', fontSize: 16}}>
                 Have a Question ?
               </Text>
-              <Text style={{fontSize: 14, fontWeight: 'semibold'}}>
-                Feel free to contact us
+              <Text
+                style={{
+                  fontFamily: 'DMSans36pt-Regular',
+                  fontSize: 14,
+                  width: '90%',
+                }}>
+                Contact Robert anytime for help with your booking
               </Text>
             </View>
             <View>
-              <View>
+              <View style={styles.containerButton}>
+                <TouchableOpacity
+                  style={styles.iconButtonFinal}
+                  onPress={() => {
+                    const phoneNumber = '+61481722473'; // Replace with your support phone number
+                    Linking.openURL(`tel:${phoneNumber}`);
+                  }}>
+                  <Icon1 name="call-outline" size={24} color="#000" />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.iconButtonFinal}>
+                  <Icon1 name="mail-outline" size={24} color="#000" />
+                </TouchableOpacity>
+              </View>
+
+              {/* <View>
                 <TouchableHighlight
                   onPress={() => {
                     const phoneNumber = '+61481722473'; // Replace with your support phone number
@@ -577,15 +686,44 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                   }}>
                   <Phone_Icon />
                 </TouchableHighlight>
-              </View>
+                <TouchableHighlight
+                  onPress={() => {
+                    const phoneNumber = '+61481722473'; // Replace with your support phone number
+                    Linking.openURL(`tel:${phoneNumber}`);
+                  }}>
+                  <Phone_Icon />
+                </TouchableHighlight>
+              </View> */}
             </View>
           </View>
-
+          <Text
+            style={{
+              fontFamily: 'DMSans36pt-Regular',
+              fontSize: 14,
+              paddingHorizontal: 5,
+              marginVertical: 10,
+            }}>
+            By selecting <Text style={{fontWeight: 'bold'}}>Book Ride</Text>,
+            you agree to our{' '}
+            <Text
+              style={{textDecorationLine: 'underline', fontWeight: 'bold'}}
+              onPress={() =>
+                Linking.openURL('https://your-cancellation-policy-url.com')
+              }>
+              Cancellation policy
+            </Text>{' '}
+            and Ozove{' '}
+            <Text
+              style={{textDecorationLine: 'underline', fontWeight: 'bold'}}
+              onPress={() => Linking.openURL('https://your-terms-url.com')}>
+              terms and conditions
+            </Text>
+          </Text>
           <View
             style={{
               width: '100%',
               marginTop: 10,
-              paddingHorizontal: 16, // Add horizontal padding if needed
+              paddingHorizontal: 5, // Add horizontal padding if needed
             }}>
             <TouchableOpacity
               disabled={ServerLoading}
@@ -593,8 +731,8 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                 backgroundColor: '#FFAF19',
                 width: '100%', // Changed from 90% to 100%
                 padding: 10,
-                borderRadius: 12,
-                paddingVertical: 20,
+                borderRadius: 5,
+                paddingVertical: 12,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
@@ -604,9 +742,9 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
               ) : (
                 <Text
                   style={{
-                    color: '#333',
-                    fontSize: 16,
-                    fontWeight: 'bold',
+                    fontFamily: 'DMSans36pt-ExtraBold',
+                    color: '#141921',
+                    fontSize: 24,
                   }}>
                   {'Book Ride '}
                 </Text>
@@ -641,7 +779,6 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
               shadowRadius: 3.5,
               padding: 20,
             }}>
-            {/* Header */}
             <View
               style={{
                 flexDirection: 'row',

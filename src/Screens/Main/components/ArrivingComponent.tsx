@@ -16,7 +16,7 @@ const ArrivingComponent = ({carArrived, onReviewPress}) => {
       <Text style={styles.arrivalText}>Track your journey</Text>
       <View style={styles.driverInfoContainer}>
         <Image
-          source={require('../../../../assests/DriverProfile/svgviewer-png-output.png')}
+          source={require('../../../../assets/DriverProfile/svgviewer-png-output.png')}
           style={styles.driverImage}
         />
         <View style={styles.ratingContainer}>

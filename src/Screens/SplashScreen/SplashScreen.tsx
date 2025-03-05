@@ -1,7 +1,7 @@
 // src/screens/SplashScreen.js
 import React, {useEffect, useRef, useState} from 'react';
 import {View, StatusBar, Animated, Dimensions, Text} from 'react-native';
-import Logo from '../../../assests/logo.svg';
+import Logo from '../../../assets/logo.svg';
 import {useAppSelector} from '../../hooks/useRedux';
 
 const SplashScreen = ({navigation, isSignedIn}: any) => {

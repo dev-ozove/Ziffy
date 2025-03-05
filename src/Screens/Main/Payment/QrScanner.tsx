@@ -9,8 +9,8 @@ import {
   StatusBar,
 } from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import ScannerLogo from '../../../../assests/Scanner/scanner_logo.svg';
-import ScanPagination from '../../../../assests/DriverProfile/ScanPagination';
+import ScannerLogo from '../../../../assets/Scanner/scanner_logo.svg';
+import ScanPagination from '../../../../assets/DriverProfile/ScanPagination';
 
 const {width} = Dimensions.get('window');
 

@@ -1,7 +1,7 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import BackIcon from '../../../../assests/back_icon.svg';
+import BackIcon from '../../../../assets/back_icon.svg';
 
 interface AddCardScreen {
   setShowNextScreen: (value: number) => void;

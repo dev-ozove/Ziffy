@@ -19,7 +19,7 @@ import {
 import {useOzove} from '../../../../Context/ozoveContext';
 import Geolocation from '@react-native-community/geolocation';
 import {styles} from '../../../../Components/MainStyles';
-import PickupLocationIcon from '../../../../../assests/Pickup_icon.svg';
+import PickupLocationIcon from '../../../../../assets/Pickup_icon.svg';
 import RewardsScreen from '../../components/RewardsScreen';
 import BookingInputScreen from '../../components/BookingInputScreen';
 import {Additional_services, Vechicle_data} from '../../../../Config/constants';

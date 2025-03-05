@@ -8,12 +8,12 @@ import {
   TouchableHighlight,
   TextInput,
 } from 'react-native';
-import MainLogo from '../../../assests/Logo_main.svg';
+import MainLogo from '../../../assets/Logo_main.svg';
 
 //Importing logos for google, facebook and apple login
-import Google from '../../../assests/login/google.svg';
-import Facebook from '../../../assests/login/facebook.svg';
-import Apple from '../../../assests/login/apple.svg';
+import Google from '../../../assets/login/google.svg';
+import Facebook from '../../../assets/login/facebook.svg';
+import Apple from '../../../assets/login/apple.svg';
 import auth from '@react-native-firebase/auth';
 
 import PhoneInput from 'react-native-phone-number-input';
@@ -83,33 +83,36 @@ const LoginScreen = ({navigation}: any) => {
       <View
         style={{
           flex: 1,
-          justifyContent: 'flex-start',
+          justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: '#fff',
         }}>
-        <View style={{marginTop: 100}}>
+        <View style={{}}>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <View style={{marginBottom: 10}}>
               <Text
-                style={{fontSize: 30, fontWeight: 'bold', color: '#141921'}}>
+                style={{
+                  fontSize: 22,
+                  fontFamily: 'DMSans36pt-SemiBold',
+                  color: '#141921',
+                }}>
                 Welcome to{' '}
               </Text>
             </View>
             <MainLogo />
-
             <Text
               style={{
-                color: '#333',
-                fontWeight: 700,
-                fontSize: 28,
-                marginTop: 5,
+                color: '#141921',
+                fontFamily: 'DMSans36pt-ExtraBold',
+                fontSize: 26,
+                marginVertical: 5,
               }}>
               Login to your account
             </Text>
             <Text
               style={{
-                color: '#333',
-                fontWeight: 400,
+                color: '#141921',
+                fontFamily: 'DMSans36pt-Medium',
                 fontSize: 16,
               }}>
               Enter your details below to continue ordering
@@ -122,8 +125,10 @@ const LoginScreen = ({navigation}: any) => {
             <View style={{marginTop: 10}}>
               <Text
                 style={{
-                  color: '#333',
-                  fontWeight: 600,
+                  color: '#141921',
+                  fontSize: 18,
+
+                  fontFamily: 'DMSans36pt-SemiBold',
                   marginBottom: 5,
                   alignSelf: 'flex-start',
                   marginLeft: 10,
@@ -133,13 +138,13 @@ const LoginScreen = ({navigation}: any) => {
               {/*Phone Number Input Section */}
               <PhoneInput
                 ref={phoneInput}
-                defaultValue={value}
+                // defaultValue={value}
                 containerStyle={{
                   backgroundColor: '#fff',
                   alignSelf: 'center',
                   borderWidth: 1,
                   borderColor: '#ccc',
-                  borderRadius: 14,
+                  borderRadius: 5,
                 }}
                 textContainerStyle={{
                   backgroundColor: '#fff',
@@ -162,27 +167,38 @@ const LoginScreen = ({navigation}: any) => {
                 onPress={handleLogin}
                 style={{
                   marginTop: 10,
+                  marginHorizontal: 11,
                   height: 50,
                   backgroundColor: '#FFAF19',
                   borderRadius: 5,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text style={{color: '#333', fontWeight: 600, fontSize: 16}}>
+                <Text
+                  style={{
+                    color: '#333',
+                    fontSize: 20,
+                    fontFamily: 'DMSans36pt-SemiBold',
+                  }}>
                   Continue
                 </Text>
               </TouchableOpacity>
-              <Text style={{color: '#333', alignSelf: 'center', marginTop: 5}}>
-                Or Continue Using
+              <Text
+                style={{
+                  color: '#333',
+                  alignSelf: 'center',
+                  marginVertical: 10,
+                }}>
+                Or
               </Text>
               <View
                 style={{
                   alignSelf: 'center',
-                  marginTop: 5,
+
                   flexDirection: 'row',
                   justifyContent: 'space-evenly',
                 }}>
-                <View style={{margin: 10, flex: 1}}>
+                <View style={{flex: 1}}>
                   {/* Google Sign-In Button */}
                   <TouchableOpacity
                     onPress={handleGoogleLogin}
@@ -195,12 +211,40 @@ const LoginScreen = ({navigation}: any) => {
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginHorizontal: 20,
+                      marginHorizontal: 10,
                     }}>
                     <Google style={{marginRight: 10}} width={20} height={20} />
                     <Text
                       style={{color: '#333', fontWeight: '600', fontSize: 16}}>
                       Sign in with Google
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View
+                style={{
+                  alignSelf: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                }}>
+                <View style={{margin: 10, flex: 1}}>
+                  {/* Google Sign-In Button */}
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#fff',
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                      paddingVertical: 15,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginHorizontal: 1,
+                    }}>
+                    <Apple style={{marginRight: 10}} width={20} height={20} />
+                    <Text
+                      style={{color: '#333', fontWeight: '600', fontSize: 16}}>
+                      Sign in with Apple
                     </Text>
                   </TouchableOpacity>
                 </View>

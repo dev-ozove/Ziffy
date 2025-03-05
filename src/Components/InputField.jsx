@@ -11,6 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 export default function InputField({
   label,
   placeholder,
+  labelstyle,
   value,
   onChangeText,
   keyboardType = 'default',
@@ -28,7 +29,7 @@ export default function InputField({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, labelstyle]}>{label}</Text>
       {isDate ? (
         <TouchableOpacity
           style={styles.input}

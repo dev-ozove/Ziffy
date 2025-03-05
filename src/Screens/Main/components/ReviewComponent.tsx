@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon1 from 'react-native-vector-icons/FontAwesome5';
-import BackIcon from '../../../../assests/Headers/Backicon.svg';
+import BackIcon from '../../../../assets/Headers/Backicon.svg';
 import {useNavigation} from '@react-navigation/native';
 const {width} = Dimensions.get('window');
 
@@ -33,7 +33,7 @@ const ReviewComponent = ({backpress, ReviewPress}) => {
       </View>
       <View style={styles.driverInfoContainer}>
         <Image
-          source={require('../../../../assests/DriverProfile/svgviewer-png-output.png')}
+          source={require('../../../../assets/DriverProfile/svgviewer-png-output.png')}
           style={styles.driverImage}
         />
         <View style={styles.ratingContainer}>

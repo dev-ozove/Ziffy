@@ -6,15 +6,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
-import BackIcon from '../../../../assests/back_icon.svg';
+import BackIcon from '../../../../assets/back_icon.svg';
 import {useOzove} from '../../../Context/ozoveContext';
 import {styles} from '../../../Components/MainStyles';
 import {Vechicle_data} from '../../../Config/constants';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import Avatar from '../../../../assets/Avatar.svg';
 
 interface BookingDescription {
   showNextScreen: number;
   setShowNextScreen: (value: number) => void;
   set_contactDetails: (value: any) => void;
+  setShowPaymentView: (value: any) => void;
   contactDetails: any;
   notes: string;
   set_notes: (value: string) => void;
@@ -32,6 +35,7 @@ const BookingDescription: React.FC<BookingDescription> = ({
   showNextScreen,
   setShowNextScreen,
   set_contactDetails,
+  setShowPaymentView,
   contactDetails,
   notes,
   set_notes,
@@ -44,6 +48,7 @@ const BookingDescription: React.FC<BookingDescription> = ({
     name: '',
     phoneNumber: '',
   });
+  const [promoCode, setPromoCode] = useState('');
   const minimumCapacity =
     Vechicle_data[selectedVehicle || 0]?.details?.minimum_capacity;
   const [showForm, setShowForm] = useState(false);
@@ -140,32 +145,36 @@ const BookingDescription: React.FC<BookingDescription> = ({
             </View>
           ) : null}
         </View>
-
-        <View style={styles.notesContainer}>
-          <TextInput
-            style={styles.notesInput}
-            placeholder="Notes For Driver"
-            placeholderTextColor="#888"
-            multiline={true}
-            value={notes}
-            onChangeText={set_notes}
-          />
-        </View>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => setShowPaymentView(true)}
+          activeOpacity={0.7}>
+          <Text style={styles.header}>Payment Method</Text>
+          <View style={styles.row}>
+            <View style={styles.iconContainer1}>
+              <Avatar />
+            </View>
+            <View style={styles.textContainer}>
+              <Text style={styles.personalText}>Personal</Text>
+              <Text style={styles.cardText}>Visa 0493</Text>
+            </View>
+            <Icon name="chevron-right" size={24} color="#868886" />
+          </View>
+        </TouchableOpacity>
 
         {/* Passenger Counter Section */}
         <View
           style={{
-            marginBottom: 25,
-            paddingHorizontal: 15,
+            marginBottom: 15,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
           <Text
             style={{
-              fontSize: 18,
-              fontWeight: '600',
+              fontSize: 16,
+              fontFamily: 'DMSans36pt-SemiBold',
               color: '#141921',
-              marginBottom: 8,
+              marginBottom: 5,
               alignSelf: 'flex-start',
             }}>
             Specify Number of Passengers
@@ -174,6 +183,7 @@ const BookingDescription: React.FC<BookingDescription> = ({
           <Text
             style={{
               fontSize: 14,
+              fontFamily: 'DMSans36pt-Medium',
               color: '#767676',
               marginBottom: 20,
               alignSelf: 'flex-start',
@@ -261,6 +271,25 @@ const BookingDescription: React.FC<BookingDescription> = ({
               </TouchableOpacity>
             </View>
           </View>
+        </View>
+        <View style={styles.container1}>
+          <TextInput
+            style={styles.input1}
+            placeholder="Add Promo Code"
+            placeholderTextColor="#000"
+            value={promoCode}
+            onChangeText={text => setPromoCode(text)}
+          />
+        </View>
+        <View style={styles.notesContainer}>
+          <TextInput
+            style={styles.notesInput}
+            placeholder="Notes For Driver"
+            placeholderTextColor="#000"
+            multiline={true}
+            value={notes}
+            onChangeText={set_notes}
+          />
         </View>
       </ScrollView>
     </View>

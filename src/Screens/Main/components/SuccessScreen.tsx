@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import CheckIcon from '../../../../assests/Success.svg'; // Use your existing icon
+import CheckIcon from '../../../../assets/Success.svg'; // Use your existing icon
 import {styles} from '../../../Components/MainStyles';
 import {useNavigation} from '@react-navigation/native';
 

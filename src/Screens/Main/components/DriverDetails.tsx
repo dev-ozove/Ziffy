@@ -8,8 +8,8 @@ import {
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import TripIcon from '../../../../assests/DriverProfile/TripIcon';
-import CardIcon from '../../../../assests/DriverProfile/CardIcon';
+import TripIcon from '../../../../assets/DriverProfile/TripIcon';
+import CardIcon from '../../../../assets/DriverProfile/CardIcon';
 import Share from 'react-native-share';
 const {width} = Dimensions.get('window');
 
@@ -30,7 +30,7 @@ const DriverDetails = ({onCheckinPress}) => {
       <Text style={styles.arrivalText}>Arriving In 3 Minutes</Text>
       <View style={styles.driverInfoContainer}>
         <Image
-          source={require('../../../../assests/DriverProfile/svgviewer-png-output.png')} // Adjust the path as per your project structure
+          source={require('../../../../assets/DriverProfile/svgviewer-png-output.png')} // Adjust the path as per your project structure
           style={styles.driverImage}
         />
         <View style={styles.ratingContainer}>

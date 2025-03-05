@@ -6,9 +6,23 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  containerButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 90, // Adjust based on spacing
+  },
+  iconButtonFinal: {
+    top: 8,
+    backgroundColor: '#FFF3DC',
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: '70%',
+    height: '90%',
   },
   actionSheet: {
     position: 'absolute',
@@ -30,13 +44,22 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 10,
   },
+  profileButton: {
+    position: 'absolute',
+    top: 60,
+    left: 10,
+    flexDirection: 'row',
+    gap: 10,
+  },
+  sheetContainer: {flex: 1, paddingBottom: 200},
   sheetContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   titleText: {
-    color: '#4A4A4A',
+    fontFamily: 'DMSans36pt-ExtraBold',
+    color: '#141921',
     fontSize: 24,
-    fontWeight: 'bold',
+    marginBottom: 10,
   },
 
   iconContainer: {
@@ -44,9 +67,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F0F0F0',
-    paddingHorizontal: 5,
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
   },
 
   nextButton: {
@@ -136,10 +156,10 @@ export const styles = StyleSheet.create({
 
   inputRow: {
     alignItems: 'center',
-    marginVertical: 10,
-    paddingHorizontal: 20,
+    marginBottom: 10,
+    paddingHorizontal: 10,
     backgroundColor: '#F0F0F0',
-    borderRadius: 12,
+    borderRadius: 5,
   },
 
   inputField: {
@@ -180,6 +200,7 @@ export const styles = StyleSheet.create({
   },
   Container: {
     flex: 1,
+    paddingHorizontal: 10,
     backgroundColor: '#fff',
   },
   backButton: {
@@ -190,27 +211,27 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4A4A4A',
-    marginBottom: 24,
+    fontFamily: 'DMSans36pt-ExtraBold',
+    color: '#000',
+    marginBottom: 10,
   },
   section: {
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'DMSans36pt-SemiBold',
     marginBottom: 12,
   },
   buttonContainer: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: 10,
   },
   button: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: '#CFD3CF',
     backgroundColor: '#F0F0F0',
@@ -220,16 +241,56 @@ export const styles = StyleSheet.create({
     backgroundColor: '#ffae194e',
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontFamily: 'DMSans36pt-Medium',
   },
   contactInputsContainer: {
-    gap: 12,
+    gap: 10,
+  },
+  card: {
+    backgroundColor: '#ffae194e',
+    borderRadius: 5,
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#FFAF19',
+    marginBottom: 10,
+  },
+  header: {
+    fontSize: 20,
+    fontFamily: 'DMSans36pt-SemiBold',
+    marginBottom: 10,
+    color: '#000',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer1: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  personalText: {
+    fontSize: 16,
+    fontFamily: 'DMSans36pt-SemiBold',
+    color: '#7D7B7B',
+    fontWeight: '500',
+  },
+  cardText: {
+    fontSize: 14,
+    fontFamily: 'DMSans36pt-Regular',
+    color: '#8C8B8B',
   },
   input: {
     backgroundColor: '#F0F0F0',
     padding: 12,
-    borderRadius: 8,
+    borderRadius: 5,
     fontSize: 16,
   },
   saveButton: {
@@ -245,7 +306,7 @@ export const styles = StyleSheet.create({
   },
   savedContactContainer: {
     backgroundColor: '#F0F0F0',
-    borderRadius: 8,
+    borderRadius: 5,
     padding: 12,
     marginTop: 8,
   },
@@ -302,15 +363,33 @@ export const styles = StyleSheet.create({
     color: '#666',
   },
   notesContainer: {
-    marginBottom: 24,
+    marginBottom: 10,
+    borderColor: '#D3D3D3',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  container1: {
+    backgroundColor: '#F0F0F0',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#D3D3D3',
+    paddingVertical: 14,
+    paddingHorizontal: 15,
+    marginVertical: 10,
+  },
+  input1: {
+    fontSize: 14,
+    fontFamily: 'DMSans36pt-Medium',
+    color: '#000',
   },
   notesInput: {
     backgroundColor: '#F0F0F0',
-    borderRadius: 8,
+    borderRadius: 5,
     padding: 12,
     minHeight: 100,
     textAlignVertical: 'top',
-    fontSize: 16,
+    fontFamily: 'DMSans36pt-Medium',
+    fontSize: 14,
   },
   reviewButton: {
     backgroundColor: '#FFAF19',
@@ -338,12 +417,12 @@ export const Styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: 'transparent',
     borderColor: '#d7d7d7',
-    borderRadius: 12,
+    borderRadius: 5,
   },
   selectedServiceButton: {
-    backgroundColor: '#FFAF19',
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    backgroundColor: '#FFEFC5',
+    borderRadius: 5,
+    borderColor: '#FFAF19',
   },
   serviceContent: {
     flexDirection: 'row',
@@ -366,7 +445,6 @@ export const Styles = StyleSheet.create({
     color: '#000',
   },
   serviceDetailsContainer: {
-    padding: 16,
     backgroundColor: '#FFAF1920',
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,

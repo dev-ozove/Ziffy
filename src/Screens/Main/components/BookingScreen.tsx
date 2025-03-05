@@ -1,6 +1,6 @@
 import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import Per_person_price from '../../../assests/per_person_price_icon.svg';
+import Per_person_price from '../../../assets/per_person_price_icon.svg';
 
 interface BookingScreenProps {
   setSelectedVehicle: any;

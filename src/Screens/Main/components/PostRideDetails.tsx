@@ -11,7 +11,7 @@ import {
   BackHandler,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import BackIcon from '../../../../assests/back_icon.svg';
+import BackIcon from '../../../../assets/back_icon.svg';
 import CancelModal from './CancelModal';
 import {useAppDispatch, useAppSelector} from '../../../hooks/useRedux';
 import {clearBookings} from '../../../Redux/Features/BookingsSlice';
@@ -63,7 +63,7 @@ const PostRideDetails = ({onTrackRidePress, onCancelRidePress}) => {
 
         <View style={styles.vehicleContainer}>
           <Image
-            source={require('../../../../assests/Vechicles/VITO_large_1.png')}
+            source={require('../../../../assets/Vechicles/VITO_large_1.png')}
             style={styles.vehicleImage}
           />
 

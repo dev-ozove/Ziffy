@@ -1,7 +1,8 @@
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
-import Lock from '../../../assests/login/Lock.svg';
+import Lock from '../../../assets/login/Lock.svg';
 import {OtpInput} from 'react-native-otp-entry';
+import BackIcon from '../../../assets/Headers/Backicon.svg';
 export default function Verify({navigation}: any) {
   const [value, setValue] = useState('');
   const [formattedValue, setFormattedValue] = useState('');
@@ -14,11 +15,16 @@ export default function Verify({navigation}: any) {
     <View
       style={{
         flex: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
       }}>
-      <View style={{marginTop: 100, width: '100%'}}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{position: 'absolute', top: 80, left: 20}}>
+        <BackIcon />
+      </TouchableOpacity>
+      <View style={{width: '100%'}}>
         <View
           style={{
             padding: 20,
@@ -29,11 +35,24 @@ export default function Verify({navigation}: any) {
           <Lock height={40} width={40} />
         </View>
         <View style={{marginTop: 10, alignSelf: 'center'}}>
-          <Text style={{color: '#333', fontWeight: 700, fontSize: 28}}>
+          <Text
+            style={{
+              color: '#141921',
+              fontFamily: 'DMSans36pt-ExtraBold',
+              fontSize: 28,
+              textAlign: 'center',
+              marginBottom: 10,
+            }}>
             Enter verification code
           </Text>
-          <View style={{width: '80%', alignSelf: 'center'}}>
-            <Text style={{color: '#333', fontWeight: 500, textAlign: 'center'}}>
+          <View style={{width: '90%', alignSelf: 'center'}}>
+            <Text
+              style={{
+                color: '#141921',
+                fontFamily: 'DMSans36pt-Medium',
+                textAlign: 'center',
+                fontSize: 16,
+              }}>
               Input the code we sent to{' '}
               <Text style={{color: '#FFAF19', textDecorationLine: 'underline'}}>
                 +1-XXX-XXX-X258
@@ -41,13 +60,14 @@ export default function Verify({navigation}: any) {
               to access your account.
             </Text>
           </View>
-          <View style={{marginTop: 10, alignSelf: 'center'}}>
+          <View style={{marginVertical: 10, alignSelf: 'center'}}>
             <Text
               style={{
-                color: '#333',
+                color: '#141921',
                 fontSize: 18,
-                fontWeight: 600,
+                fontFamily: 'DMSans36pt-SemiBold',
                 alignSelf: 'center',
+                marginBottom: 10,
               }}>
               Enter code Here
             </Text>
@@ -83,15 +103,32 @@ export default function Verify({navigation}: any) {
                 style={{
                   height: 50,
                   backgroundColor: '#A8A8A8',
-                  borderRadius: 8,
+                  borderRadius: 5,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text style={{color: '#333', fontWeight: 400, fontSize: 16}}>
+                <Text
+                  style={{
+                    color: '#141921',
+                    fontSize: 18,
+                    fontFamily: 'DMSans36pt-SemiBold',
+                  }}>
                   Verify Now
                 </Text>
               </TouchableOpacity>
             </View>
+
+            <Text
+              style={{
+                fontSize: 18,
+                fontFamily: 'DMSans36pt-Medium',
+                color: '#141921',
+                textAlign: 'center',
+                marginVertical: 15,
+              }}>
+              Resend Code{' '}
+              <Text style={{color: '#F8AB1E', fontWeight: '700'}}>(2:26)</Text>
+            </Text>
           </View>
         </View>
       </View>

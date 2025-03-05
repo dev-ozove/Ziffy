@@ -1,6 +1,6 @@
-import Vech1_large from '../../assests/Vechicles/VITO_large_1.png';
-import Vech2_large from '../../assests/Vechicles/VITO_2_large.png';
-import Vech3_large from '../../assests/Vechicles/VITO_3_large.png';
+import Vech1_large from '../../assets/Vechicles/VITO_large_1.png';
+import Vech2_large from '../../assets/Vechicles/VITO_2_large.png';
+import Vech3_large from '../../assets/Vechicles/VITO_3_large.png';
 
 export const Additional_services = [
   {

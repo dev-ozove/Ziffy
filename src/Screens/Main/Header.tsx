@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React from 'react';
 
-import Main_menu from '../../../assests/Main_menu.svg';
+import Main_menu from '../../../assets/Main_menu.svg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useOzove} from '../../Context/ozoveContext';
 import {styles} from '../../Components/MainStyles';

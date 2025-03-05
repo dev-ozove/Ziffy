@@ -13,12 +13,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import TripIcon from '../../../../assests/DriverProfile/TripIcon';
-import CardIcon from '../../../../assests/DriverProfile/CardIcon';
-import OfferIcon from '../../../../assests/DriverProfile/OfferIcon';
-import Avatar from '../../../../assests/Avatar.svg';
-import MinusIcon from '../../../../assests/DriverProfile/MinusIcon';
-import PlusIcon from '../../../../assests/DriverProfile/PlusIcon';
+import TripIcon from '../../../../assets/DriverProfile/TripIcon';
+import CardIcon from '../../../../assets/DriverProfile/CardIcon';
+import OfferIcon from '../../../../assets/DriverProfile/OfferIcon';
+import Avatar from '../../../../assets/Avatar.svg';
+import MinusIcon from '../../../../assets/DriverProfile/MinusIcon';
+import PlusIcon from '../../../../assets/DriverProfile/PlusIcon';
 
 const {width} = Dimensions.get('window');
 
@@ -35,7 +35,7 @@ const StartRideComponent = ({onProceed}) => {
       <Text style={styles.arrivalText1}>Driver Details</Text>
       <View style={styles.driverInfoContainer}>
         <Image
-          source={require('../../../../assests/DriverProfile/svgviewer-png-output.png')} // Adjust the path as per your project structure
+          source={require('../../../../assets/DriverProfile/svgviewer-png-output.png')} // Adjust the path as per your project structure
           style={styles.driverImage}
         />
         <View style={styles.ratingContainer}>
@@ -74,7 +74,7 @@ const StartRideComponent = ({onProceed}) => {
           <Text style={styles.price}>$7.45</Text>
           <Text style={styles.perPerson}>Per Person</Text>
           <Image
-            source={require('../../../../assests/Vechicles/VITO_large_1.png')}
+            source={require('../../../../assets/Vechicles/VITO_large_1.png')}
             style={styles.vehicleImage}
           />
         </View>
