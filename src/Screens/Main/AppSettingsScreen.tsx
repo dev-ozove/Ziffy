@@ -62,87 +62,96 @@ export default function AppSettingsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>App Settings</Text>
-        <View style={styles.headerRight}>
-          <Icon
-            name="help-circle-outline"
-            size={24}
-            color="#000"
-            style={styles.helpIcon}
-          />
-          <Icon
-            name="funnel-outline"
-            size={24}
-            color="#000"
-            style={styles.filterIcon}
-          />
-        </View>
-      </View>
-
-      <ScrollView style={styles.content}>
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>All Settings</Text>
-        </View>
-
-        <TouchableOpacity style={styles.settingItem}>
-          <View style={styles.settingLeft}>
-            <View style={styles.iconContainer}>
-              <Icon name="notifications-outline" size={24} color="#F4AF48" />
-            </View>
-            <View>
-              <Text style={styles.settingTitle}>Enable Notifications</Text>
-              <Text style={styles.settingDescription}>
-                Allow us to send you push notifications
-              </Text>
-            </View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        marginTop: 30,
+        backgroundColor: '#fff',
+      }}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>App Settings</Text>
+          <View style={styles.headerRight}>
+            <Icon
+              name="help-circle-outline"
+              size={24}
+              color="#000"
+              style={styles.helpIcon}
+            />
+            <Icon
+              name="funnel-outline"
+              size={24}
+              color="#000"
+              style={styles.filterIcon}
+            />
           </View>
-          <Switch
-            value={isNotificationsEnabled}
-            onValueChange={setIsNotificationsEnabled}
-            trackColor={{false: '#D1D1D6', true: '#F4AF48'}}
-            thumbColor="#FFFFFF"
-          />
-        </TouchableOpacity>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionHeader}>Favorites</Text>
-        </View>
-        <View style={styles.favoritesContainer}>
-          {favorites.map(favorite => renderFavoriteItem(favorite))}
         </View>
 
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuItemTitle}>Privacy</Text>
-          <Text style={styles.menuItemDescription}>
-            Manage the data you share with us
-          </Text>
-        </TouchableOpacity>
+        <ScrollView style={styles.content}>
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>All Settings</Text>
+          </View>
 
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuItemTitle}>Security</Text>
-          <Text style={styles.menuItemDescription}>
-            Control your account security with 2-step verification
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.settingItem}>
+            <View style={styles.settingLeft}>
+              <View style={styles.iconContainer}>
+                <Icon name="notifications-outline" size={24} color="#F4AF48" />
+              </View>
+              <View>
+                <Text style={styles.settingTitle}>Enable Notifications</Text>
+                <Text style={styles.settingDescription}>
+                  Allow us to send you push notifications
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={isNotificationsEnabled}
+              onValueChange={setIsNotificationsEnabled}
+              trackColor={{false: '#D1D1D6', true: '#F4AF48'}}
+              thumbColor="#FFFFFF"
+            />
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuItemTitle}>Communication</Text>
-          <Text style={styles.menuItemDescription}>
-            Choose your preferred contact methods and manage your notification
-            settings
-          </Text>
-        </TouchableOpacity>
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Favorites</Text>
+          </View>
+          <View style={styles.favoritesContainer}>
+            {favorites.map(favorite => renderFavoriteItem(favorite))}
+          </View>
 
-        <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
-          <Icon name="log-out-outline" size={20} color="#FF3B30" />
-          <Text style={styles.signOutText}>Sign out</Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <TouchableOpacity style={styles.menuItem}>
+            <Text style={styles.menuItemTitle}>Privacy</Text>
+            <Text style={styles.menuItemDescription}>
+              Manage the data you share with us
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <Text style={styles.menuItemTitle}>Security</Text>
+            <Text style={styles.menuItemDescription}>
+              Control your account security with 2-step verification
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem}>
+            <Text style={styles.menuItemTitle}>Communication</Text>
+            <Text style={styles.menuItemDescription}>
+              Choose your preferred contact methods and manage your notification
+              settings
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleSignOut}
+            style={styles.signOutButton}>
+            <Icon name="log-out-outline" size={20} color="#FF3B30" />
+            <Text style={styles.signOutText}>Sign out</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
     </SafeAreaView>
   );
 }

@@ -8,13 +8,14 @@ import {
   TextInput,
   Modal,
   Button,
-  TouchableHighlight,
   Linking,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
-import React, {useMemo, useState} from 'react';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import React, {useEffect, useMemo, useState} from 'react';
 import BackIcon from '../../../../assets/back_icon.svg';
-import Phone_Icon from '../../../../assets/sidebar/Contacts.svg';
+import Phone_Icon from '../../../../assets/PhoneIcon.svg';
+import Email_Icon from '../../../../assets/EmailIcon.svg';
 import {styles} from '../../../Components/MainStyles';
 import PickupLocationIcon from '../../../../assets/Pickup_icon.svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -52,6 +53,8 @@ interface ReviewBookingProps {
   setPassenger_Count: (value: number) => void;
   passenger_Count: number;
   additionalFeatures: AdditionalFeatures;
+  sendVehicleData: any;
+  setSendVehicleData: any;
 }
 
 const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
@@ -70,20 +73,45 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
   setPassenger_Count,
   passenger_Count,
   additionalFeatures,
+  sendVehicleData,
+  setSendVehicleData,
 }) => {
   const {bookingData} = useOzove();
   const [localLoading, set_localLoading] = useState(false);
-  const [passengerCount, setPassengerCount] = useState('25');
-  const {_handleBooking, _update_BookingData} = useOzove();
+  const [OrderID, setOrderID] = useState<string>('');
+  const {_handleBooking, _update_BookingData, Generate_OrderID} = useOzove();
   const auth = getAuth();
   const navigation = useNavigation<any>();
   console.log(vehiclePricing);
+  console.log('sendVehicleData >>> ', sendVehicleData);
 
-  const Generate_OrderID = () => {
-    const randomPart = Math.floor(100000 + Math.random() * 900000); // Generate 6 random digits
-    const timestampPart = Date.now().toString().slice(-2); // Use the last 2 digits of the timestamp
+  const getTheOrderID = async () => {
+    const orderID = Generate_OrderID();
+    setOrderID(orderID);
+  };
 
-    return `${randomPart}${timestampPart}`; // Combine to form an 8-digit number
+  useEffect(() => {
+    getTheOrderID();
+  }, []);
+
+  const handleEmailPress = async () => {
+    const emailURL =
+      'mailto:support@example.com?subject=App Feedback&body=Hello Team,';
+
+    try {
+      const supported = await Linking.canOpenURL(emailURL).catch(
+        (error: any) => {
+          console.log(error);
+        },
+      );
+      if (supported) {
+        await Linking.openURL(emailURL);
+      } else {
+        Alert.alert('Error', 'No email client installed');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to open email client');
+    }
   };
 
   // Calculate additional features costs
@@ -165,9 +193,8 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
   const _LocalhandleBooking = async () => {
     set_localLoading(true);
 
-    const OrderID = Generate_OrderID();
     if (OrderID) {
-      await _handleBooking(OrderID, 'Pending')
+      await _handleBooking(OrderID, sendVehicleData)
         .then(() => {
           set_localLoading(false);
           navigation.navigate('Success');
@@ -188,30 +215,45 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
           alignItems: 'flex-start',
           paddingHorizontal: 5,
         }}>
-        <TouchableOpacity
-          onPress={() => {
-            setShowNextScreen(showNextScreen - 1);
-          }}>
-          <View>
-            <BackIcon />
-          </View>
-        </TouchableOpacity>
         <ScrollView style={{width: '100%', marginBottom: 10}}>
-          <View style={{marginBottom: 10}}>
-            <Text
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginBottom: 10,
+            }}>
+            <View style={{}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowNextScreen(showNextScreen - 1);
+                }}>
+                <View>
+                  <BackIcon />
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View
               style={{
-                fontFamily: 'DMSans36pt-ExtraBold',
-                color: '#141921',
-                fontSize: 24,
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-              Review Booking
-            </Text>
+              <Text
+                style={{
+                  fontFamily: 'DMSans36pt-ExtraBold',
+                  color: '#141921',
+                  fontSize: 24,
+                }}>
+                Review Booking
+              </Text>
+            </View>
           </View>
           <Text style={{marginVertical: 2, fontSize: 13, fontWeight: '700'}}>
-            14-Jan-2023 16:32
+            {`${bookingData?.Date}  (${bookingData?.Time})`}
           </Text>
           <Text style={{fontSize: 13, color: '#F8AB1E', fontWeight: '700'}}>
-            Order# <Text style={{color: '#F8AB1E'}}>zen4587</Text>
+            Order <Text style={{color: '#F8AB1E'}}>{OrderID}</Text>
           </Text>
           {/*Pickup and destinaiton Location */}
           <View style={{width: '100%', marginTop: 10}}>
@@ -297,7 +339,7 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                       resizeMode: 'contain',
                       borderRadius: 12,
                     }}
-                    source={Vechicle_data[selectedVehicle || 0].image}
+                    source={{uri: sendVehicleData?.image}}
                   />
                 </View>
                 <View
@@ -312,14 +354,12 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                         fontFamily: 'DMSans36pt-SemiBold',
                         fontSize: 14,
                       }}>
-                      {Vechicle_data[selectedVehicle || 0]?.title}
+                      {sendVehicleData?.title}
                     </Text>
                   </View>
                   <View style={{marginLeft: 10}}>
                     <Text style={{color: '#767676', fontSize: 8}}>
-                      {`${
-                        Vechicle_data[selectedVehicle || 0]?.capacity
-                      } seater`}
+                      {`${sendVehicleData?.capacity} seater`}
                     </Text>
                   </View>
                   <View
@@ -331,25 +371,12 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                     }}>
                     <Text
                       style={{
-                        color: 'green',
-                        fontFamily: 'DMSans36pt-SemiBold',
-                        fontSize: 14,
-                      }}>
-                      From
-                    </Text>
-                    <Text
-                      style={{
                         color: '#141921',
                         fontFamily: 'DMSans36pt-SemiBold',
                         fontSize: 14,
                         paddingHorizontal: 5,
                       }}>
-                      $
-                      {selectedVehicle === 0
-                        ? vehiclePricing?.van?.minimumFare
-                        : selectedVehicle === 1
-                        ? vehiclePricing?.miniBus?.minimumFare
-                        : vehiclePricing?.bus?.minimumFare}
+                      ${sendVehicleData?.price}
                     </Text>
                   </View>
                 </View>
@@ -358,7 +385,7 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
           </View>
 
           {/*Cancilation Policy */}
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               marginTop: 10,
@@ -419,7 +446,7 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </View> */}
 
           <View
             style={{
@@ -438,13 +465,12 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
               }}>
               Total Passengers
             </Text>
-            <TextInput
-              style={{fontSize: 16, fontWeight: '400'}}
-              value={passengerCount}
-              onChangeText={text => setPassengerCount(text)}
-              keyboardType="numeric"
-              editable={true}
-            />
+            <Text
+              style={{
+                fontFamily: 'DMSans36pt-SemiBold',
+                fontSize: 16,
+                color: '#141921',
+              }}>{`Minimum ${sendVehicleData?.details?.minimum_capacity} Maximum ${sendVehicleData?.details?.maximum_capacity}`}</Text>
           </View>
 
           {/*Price Breakdown */}
@@ -624,7 +650,7 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
             </View>
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.card}
             // onPress={() => setShowPaymentView(true)}
             activeOpacity={0.7}>
@@ -639,7 +665,7 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
               </View>
               <Icon name="chevron-right" size={24} color="#868886" />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View
             style={{
@@ -670,11 +696,15 @@ const FinalBookingScreen: React.FC<ReviewBookingProps> = ({
                     const phoneNumber = '+61481722473'; // Replace with your support phone number
                     Linking.openURL(`tel:${phoneNumber}`);
                   }}>
-                  <Icon1 name="call-outline" size={24} color="#000" />
+                  {/* <Icon1 name="call-outline" size={24} color="#000" /> */}
+                  <Phone_Icon />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.iconButtonFinal}>
-                  <Icon1 name="mail-outline" size={24} color="#000" />
+                <TouchableOpacity
+                  style={styles.iconButtonFinal}
+                  onPress={handleEmailPress}>
+                  {/* <Icon1 name="mail-outline" size={24} color="#000" /> */}
+                  <Email_Icon />
                 </TouchableOpacity>
               </View>
 

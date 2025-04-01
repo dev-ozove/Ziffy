@@ -1,20 +1,16 @@
-import React, {useCallback, useMemo, useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useMemo} from 'react';
 import {
   View,
   StyleSheet,
-  Dimensions,
-  BackHandler,
   Text,
-  Button,
-  Image,
+  ActivityIndicator,
+  Alert,
+  SafeAreaView,
 } from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import BottomSheet, {
-  BottomSheetScrollView,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
-import MapView, {Marker, Polyline} from 'react-native-maps';
-import {useAppSelector, useAppDispatch} from '../../hooks/useRedux';
+import {GestureHandlerRootView, Pressable} from 'react-native-gesture-handler';
+import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import MapView, {Marker} from 'react-native-maps';
+import {useAppDispatch} from '../../hooks/useRedux';
 import Header from './Header';
 import {useNavigation} from '@react-navigation/native';
 import PostRideDetails from './components/PostRideDetails';
@@ -24,314 +20,232 @@ import {clearBookings} from '../../Redux/Features/BookingsSlice';
 import StartRideComponent from './components/StartRideComponent';
 import ArrivingComponent from './components/ArrivingComponent';
 import ReviewComponent from './components/ReviewComponent';
+import polyline from '@mapbox/polyline';
+import MapViewDirections from 'react-native-maps-directions';
 
-const {height} = Dimensions.get('window');
+const API_KEY = 'AIzaSyBG43qB1FDkLoxOQyJXWkzvw7VmbX5iHNY'; // Valid key
 
 const BookingStatus = ({route}: any) => {
-  const {source} = route.params || {};
-
-  console.log('source', source);
+  const {bookingData, source} = route.params || {};
   const dispatch = useAppDispatch();
-  const bookings = useAppSelector(state => state.bookings.bookings);
-  const mapRef = useRef(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
+  const mapRef = useRef<MapView>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
+  // Debugging logs
+  console.log('Received bookingData:', bookingData);
+
+  const [routeState, setRouteState] = useState({
+    loading: true,
+    error: null,
+    coordinates: [],
+  });
   const [showPostRide, setShowPostRide] = useState(true);
   const [showStartRide, setShowStartRide] = useState(false);
   const [showReview, setReview] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const location = {
-    latitude: -31.9523,
-    longitude: 115.8613,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  };
+  // Modified coordinate parsing with distinct defaults
+  const {pickup, dropoff} = useMemo(() => {
+    try {
+      const parseCoord = (value: any, type: 'lat' | 'lng') => {
+        const num = Number(value);
+        if (isNaN(num)) throw new Error(`Invalid ${type} value`);
+        return num;
+      };
 
-  const initialLocation = {
-    latitude: -31.9523,
-    longitude: 115.8613,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  };
-
-  const carLocation = {
-    latitude: -31.9307925,
-    longitude: 115.8561585,
-  };
-
-  const southPerthLocation = {
-    latitude: -31.9402676,
-    longitude: 115.8607531,
-  };
-
-  const [carArrived, setCarArrived] = useState(false);
-  const [carPosition, setCarPosition] = useState(carLocation);
-  const [showPopup, setShowPopup] = useState(false);
-
-  useEffect(() => {
-    if (showStartRide) {
-      const timer = setTimeout(() => {
-        setCarPosition(southPerthLocation);
-        setCarArrived(true);
-      }, 10000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [showStartRide]);
-
-  useEffect(() => {
-    if (carArrived && mapRef.current) {
-      mapRef.current.animateToRegion(
-        {
-          ...southPerthLocation,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
+      console.log({
+        pickup: {
+          latitude: parseCoord(bookingData?.PickupCoordinates?.lat, 'lat'),
+          longitude: parseCoord(bookingData?.PickupCoordinates?.long, 'lng'),
         },
-        1000,
-      );
-    }
-  }, [carArrived]);
-
-  useEffect(() => {
-    if (showStartRide && mapRef.current) {
-      mapRef.current.animateToRegion(
-        {
-          ...southPerthLocation,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
+        dropoff: {
+          latitude: parseCoord(bookingData?.DropoffCoordinates?.lat, 'lat'),
+          longitude: parseCoord(bookingData?.DropoffCoordinates?.long, 'lng'),
         },
-        1000,
-      );
-    }
-  }, [showStartRide]);
+      });
 
+      return {
+        pickup: {
+          latitude: parseCoord(bookingData?.PickupCoordinates?.lat, 'lat'),
+          longitude: parseCoord(bookingData?.PickupCoordinates?.long, 'lng'),
+        },
+        dropoff: {
+          latitude: parseCoord(bookingData?.DropoffCoordinates?.lat, 'lat'),
+          longitude: parseCoord(bookingData?.DropoffCoordinates?.long, 'lng'),
+        },
+      };
+    } catch (error) {
+      console.error('Error parsing coordinates:', error);
+      Alert.alert('Error', 'Invalid location data, showing default locations');
+      return {
+        pickup: {latitude: -31.9523, longitude: 115.8613}, // Perth coordinates
+        dropoff: {latitude: -32.0523, longitude: 115.8813}, // Different default
+      };
+    }
+  }, [bookingData]);
+
+  // Update map view
   useEffect(() => {
-    if (carArrived) {
-      setShowPopup(true);
-      const timer = setTimeout(() => {
-        setShowPopup(false);
-      }, 4000);
+    const coords =
+      routeState.coordinates.length > 0
+        ? routeState.coordinates
+        : [
+            {latitude: pickup.latitude, longitude: pickup.longitude},
+            {latitude: dropoff.latitude, longitude: dropoff.longitude},
+          ];
 
-      return () => clearTimeout(timer);
-    }
-  }, [carArrived]);
+    mapRef.current?.fitToCoordinates(coords, {
+      edgePadding: {top: 50, right: 50, bottom: 300, left: 50},
+      animated: true,
+    });
+  }, [routeState, pickup, dropoff]);
 
-  const snapPoints = useMemo(() => {
-    if (showStartRide) {
-      return ['30%'];
-    }
-    return showPostRide ? ['70%', '30%'] : ['60%', '30%', '5%'];
-  }, [showPostRide, showStartRide]);
-
-  useEffect(() => {
-    if (showStartRide) {
-      bottomSheetRef.current?.snapToIndex(0);
-    }
-  }, [showStartRide]);
-
-  const handleTrackRide = () => {
-    console.log('Track Ride Pressed!');
-    setShowPostRide(false);
-  };
-
-  const handleCancelRide = () => {
-    setModalVisible(true);
-  };
-
-  const handleBackPress = () => {
-    setReview(false);
-    setShowStartRide(true);
-  };
-
-  const handleReviewPress = () => {
-    setReview(false);
-    setShowStartRide(false);
-    setShowPostRide(true);
-    setCarArrived(false);
-    setCarPosition(carLocation);
-    setShowPopup(false);
-    navigation.navigate('Main');
-  };
-
-  const handleReview = () => {
-    setReview(true);
-    console.log('pressed Review');
-  };
-
-  const handleCheckin = () => {
-    navigation.navigate('QRScanner', {source: 'BookingStatus'});
-    setShowPostRide(false);
-  };
-
-  const handleBackAction = () => {
-    if (!showPostRide) {
-      setShowPostRide(true);
-      return true;
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackAction,
-    );
-    return () => backHandler.remove();
-  }, [showPostRide]);
+  const snapPoints = useMemo(
+    () =>
+      showStartRide
+        ? ['30%']
+        : showPostRide
+        ? ['70%', '30%']
+        : ['60%', '30%', '5%'],
+    [showPostRide, showStartRide],
+  );
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <View style={styles.mapContainer}>
-        <MapView
-          key={showStartRide}
-          ref={mapRef}
-          style={styles.map}
-          showsUserLocation={true}
-          initialRegion={initialLocation}>
-          {showStartRide && (
-            <Marker coordinate={carPosition}>
-              <Image
-                source={require('../../../assets/DriverProfile/Car.png')}
-                style={{width: 60, height: 60, resizeMode: 'contain'}}
+    <SafeAreaView style={styles.safeArea}>
+      <GestureHandlerRootView style={styles.container}>
+        <View
+          style={{
+            flex: 1,
+          }}>
+          <Pressable style={StyleSheet.absoluteFill}>
+            <MapView
+              ref={mapRef}
+              style={styles.map}
+              initialRegion={{
+                ...pickup,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}>
+              {/* Permanent test marker */}
+              <Marker
+                coordinate={{
+                  latitude: -31.9523,
+                  longitude: 115.8613,
+                }}
+                title="PERMANENT TEST MARKER"
+                pinColor="black"
+                tracksViewChanges={true}
               />
-            </Marker>
-          )}
-          {showStartRide && !carArrived && (
-            <Polyline
-              coordinates={[carLocation, southPerthLocation]}
-              strokeWidth={8}
-              strokeColor="orange"
-            />
-          )}
-          {showStartRide && (
-            <Marker coordinate={southPerthLocation} pinColor="orange" />
-          )}
-        </MapView>
-      </View>
 
-      <View style={styles.profileButton}>
-        <Header navigation={navigation} />
-      </View>
-
-      {showPopup && (
-        <View style={styles.popupContainer}>
-          <View style={styles.popup}>
-            <Text style={styles.popupText}>Trip Complete</Text>
-          </View>
-        </View>
-      )}
-
-      <CancelModal
-        isVisible={isModalVisible}
-        onClose={() => setModalVisible(false)}
-        onConfirm={() => {
-          console.log('Ride Canceled');
-          dispatch(clearBookings());
-          setModalVisible(false);
-          navigation.navigate('Main');
-        }}
-      />
-
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={snapPoints}
-        enablePanDownToClose={false}
-        enableContentPanningGesture={true}
-        enableOverDrag={false}
-        handleComponent={showPostRide ? null : undefined}>
-        <BottomSheetView style={styles.contentContainer}>
-          <BottomSheetScrollView
-            style={styles.scrollContainer}
-            contentContainerStyle={{paddingBottom: 20}}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled">
-            {showReview ? (
-              <ReviewComponent
-                backpress={handleBackPress}
-                ReviewPress={handleReviewPress}
+              {/* Pickup Marker */}
+              <Marker
+                coordinate={pickup}
+                title="Pickup Location"
+                pinColor="#4CAF50"
               />
-            ) : showStartRide ? (
-              <ArrivingComponent
-                carArrived={carArrived}
-                onReviewPress={handleReview}
+
+              {/* Dropoff Marker */}
+              <Marker
+                coordinate={dropoff}
+                title="Dropoff Location"
+                pinColor="#F44336"
               />
-            ) : source === 'Checkin' ? (
-              <StartRideComponent
-                onProceed={() => {
-                  setShowStartRide(true);
-                  navigation.navigate('BookingStatus');
+
+              {/* Directions Renderer */}
+              <MapViewDirections
+                origin={pickup}
+                destination={dropoff}
+                apikey={API_KEY}
+                strokeWidth={4}
+                strokeColor="#2196F3"
+                onReady={result => {
+                  mapRef.current?.fitToCoordinates(result.coordinates, {
+                    edgePadding: {top: 50, right: 50, bottom: 300, left: 50},
+                    animated: true,
+                  });
+                }}
+                onError={errorMessage => {
+                  console.log('Directions error:', errorMessage);
+                  Alert.alert('Routing Error', 'Could not calculate route');
                 }}
               />
-            ) : showPostRide ? (
-              <PostRideDetails
-                onTrackRidePress={handleTrackRide}
-                onCancelRidePress={handleCancelRide}
-              />
-            ) : (
-              <DriverDetails onCheckinPress={handleCheckin} />
-            )}
-          </BottomSheetScrollView>
-        </BottomSheetView>
-      </BottomSheet>
-    </GestureHandlerRootView>
+            </MapView>
+          </Pressable>
+
+          {/* Bottom Sheet Content */}
+          <BottomSheet
+            ref={bottomSheetRef}
+            snapPoints={snapPoints}
+            enablePanDownToClose={false}
+            enableContentPanningGesture
+            enableOverDrag={false}>
+            <BottomSheetScrollView contentContainerStyle={styles.scrollContent}>
+              {showReview ? (
+                <ReviewComponent
+                  backpress={() => setReview(false)}
+                  ReviewPress={() => {
+                    setReview(false);
+                    navigation.navigate('Main');
+                  }}
+                />
+              ) : showStartRide ? (
+                <ArrivingComponent
+                  carArrived
+                  onReviewPress={() => setReview(true)}
+                />
+              ) : source === 'Checkin' ? (
+                <StartRideComponent onProceed={() => setShowStartRide(true)} />
+              ) : showPostRide ? (
+                <PostRideDetails
+                  bookingData={bookingData}
+                  onTrackRidePress={() => setShowPostRide(false)}
+                  onCancelRidePress={() => setModalVisible(true)}
+                />
+              ) : (
+                <DriverDetails
+                  onCheckinPress={() => navigation.navigate('QRScanner')}
+                />
+              )}
+            </BottomSheetScrollView>
+          </BottomSheet>
+        </View>
+      </GestureHandlerRootView>
+    </SafeAreaView>
   );
 };
 
+// Styles remain the same
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
-    backgroundColor: 'grey',
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
   },
   mapContainer: {
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    height: '80%', // Reserve 60% of the screen for the map
+    width: '100%',
   },
   map: {
-    flex: 1,
+    flex: 1, // Fill the mapContainer
+    ...StyleSheet.absoluteFillObject,
   },
-  scrollContainer: {
-    flexGrow: 1,
-    maxHeight: height * 0.8,
-  },
-  profileButton: {
-    position: 'absolute',
-    top: 60,
-    left: 10,
-    flexDirection: 'row',
-    gap: 10,
-  },
-  popupContainer: {
-    position: 'absolute',
-    width: '80%',
-    top: '25%',
-    left: '30%',
-    transform: [{translateX: -75}, {translateY: -50}],
-    backgroundColor: 'transparent',
-    padding: 10,
-    borderRadius: 10,
-    zIndex: 10,
-  },
-  popup: {
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#00A925',
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  popupText: {
+  loadingText: {
     fontSize: 18,
-    fontWeight: '600',
-    color: 'white',
+    marginTop: 10,
+    color: '#2196F3',
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 30,
   },
 });
 

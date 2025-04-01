@@ -10,6 +10,20 @@ export interface Booking {
   createdAt?: string;
   createdBy?: string;
 }
+
+export interface VehicleData {
+  image: string | undefined;
+  title: string;
+  capacity: number;
+  price: number;
+  details: {
+    Full_name: string;
+    per_person_price: number;
+    minimum_capacity: number;
+    image: string;
+  };
+}
+
 export interface bookingData {
   OrderId: string;
   From: string;
@@ -35,7 +49,12 @@ export interface bookingData {
       };
   driverNote: string;
   TimeStamp: string;
-  Status: string;
+  //Status: string;
+  status: {
+    bookingStatus: string;
+    statusCode: number;
+  } | null;
+  bookedVehicle: VehicleData | null;
   AdditionalServices: any[];
   PassengerCount: any;
   TotalPrice: any;
@@ -45,19 +64,6 @@ export interface CardDetails {
   cardNumber: string;
   expiryDate: string;
   cvv: string;
-}
-
-export interface VehicleData {
-  image: string | undefined;
-  title: string;
-  capacity: number;
-  price: number;
-  details: {
-    Full_name: string;
-    per_person_price: number;
-    minimum_capacity: number;
-    image: string;
-  };
 }
 
 export interface AdditionalServices {
@@ -91,6 +97,10 @@ export interface BookingInputScreenProps {
   setVehiclePricing: (value: any) => void;
   distance: any;
   duration: any;
+  notes: string;
+  set_notes: (value: string) => void;
+  setSendVehicleData: any;
+  sendVehicleData: any;
 }
 
 export interface ServiceState {

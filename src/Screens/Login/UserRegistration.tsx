@@ -13,6 +13,7 @@ import BackIcon from '../../../assets/Headers/Backicon.svg';
 
 import axios from 'axios';
 import BackendConstants from '../../Config/Config';
+import LoaderZiffy from '../Main/components/Loader/LoaderZiffy';
 export default function UserRegistration({navigation}: any) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -223,7 +224,7 @@ export default function UserRegistration({navigation}: any) {
               backgroundColor: '#FFAF19',
             }}>
             {loading ? (
-              <ActivityIndicator size={'large'} color={'#333'} />
+              <LoaderZiffy />
             ) : (
               <Text
                 style={{

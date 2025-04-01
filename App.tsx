@@ -13,6 +13,11 @@ import {AuthContextProvider} from './src/Context/authContext';
 import {clearUser, setUser} from './src/Redux/Features/UserSlice';
 import {useAppSelector} from './src/hooks/useRedux';
 import auth from '@react-native-firebase/auth';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import {AlertProvider} from './src/Context/AlertContext';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -49,15 +54,31 @@ export default function App() {
     );
   }
 
+  function NotchSafeStatusBar() {
+    const insets = useSafeAreaInsets();
+
+    return (
+      <StatusBar
+        backgroundColor="#FFAF19"
+        barStyle="dark-content"
+        translucent={true}
+      />
+    );
+  }
+
   return (
-    <AuthContextProvider>
-      <OzoveProvider>
-        <StatusBar backgroundColor={'#fff'} barStyle={'dark-content'} />
-        <NavigationContainer>
-          {/* Pass Redux state directly to RootNavigator */}
-          <RootNavigator isSignedIn={!!user} />
-        </NavigationContainer>
-      </OzoveProvider>
-    </AuthContextProvider>
+    <AlertProvider>
+      <SafeAreaProvider>
+        <AuthContextProvider>
+          <OzoveProvider>
+            <StatusBar backgroundColor={'#FFAF19'} barStyle={'dark-content'} />
+            <NavigationContainer>
+              <NotchSafeStatusBar />
+              <RootNavigator isSignedIn={!!user} />
+            </NavigationContainer>
+          </OzoveProvider>
+        </AuthContextProvider>
+      </SafeAreaProvider>
+    </AlertProvider>
   );
 }

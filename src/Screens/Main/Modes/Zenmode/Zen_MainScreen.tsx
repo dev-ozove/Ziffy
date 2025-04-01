@@ -29,6 +29,7 @@ import {StripeProvider} from '@stripe/stripe-react-native';
 import MapView, {Marker} from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import Header from '../../Header';
+import LoaderZiffy from '../../components/Loader/LoaderZiffy';
 
 export default function Zen_MainScreen({navigation}: any) {
   const Bookings = useAppSelector(state => state.bookings.bookings);
@@ -588,7 +589,7 @@ export default function Zen_MainScreen({navigation}: any) {
       <StripeProvider publishableKey={stripePublicKey}>
         <View style={styles.container}>
           {loading ? (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <LoaderZiffy />
           ) : (
             <Pressable style={StyleSheet.absoluteFill}>
               <MapView

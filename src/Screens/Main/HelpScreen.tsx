@@ -76,37 +76,44 @@ export default function HelpScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Help Center</Text>
-        <View style={styles.headerRight}>
-          <Icon
-            name="help-circle-outline"
-            size={24}
-            color="#000"
-            style={styles.helpIcon}
-          />
-          <Icon
-            name="funnel-outline"
-            size={24}
-            color="#000"
-            style={styles.filterIcon}
-          />
+    <SafeAreaView
+      style={{
+        flex: 1,
+        marginTop: 30,
+        backgroundColor: '#fff',
+      }}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Help Center</Text>
+          <View style={styles.headerRight}>
+            <Icon
+              name="help-circle-outline"
+              size={24}
+              color="#000"
+              style={styles.helpIcon}
+            />
+            <Icon
+              name="funnel-outline"
+              size={24}
+              color="#000"
+              style={styles.filterIcon}
+            />
+          </View>
         </View>
-      </View>
 
-      <ScrollView style={styles.content}>
-        <View style={styles.topicsHeader}>
-          <Text style={styles.topicsTitle}>All topics</Text>
-        </View>
+        <ScrollView style={styles.content}>
+          <View style={styles.topicsHeader}>
+            <Text style={styles.topicsTitle}>All topics</Text>
+          </View>
 
-        <View style={styles.helpItemsContainer}>
-          {helpItems.map(item => renderHelpItem(item))}
-        </View>
-      </ScrollView>
+          <View style={styles.helpItemsContainer}>
+            {helpItems.map(item => renderHelpItem(item))}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </SafeAreaView>
   );
 }

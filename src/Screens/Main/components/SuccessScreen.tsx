@@ -1,15 +1,6 @@
 import React, {useEffect, useRef} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, Text, StyleSheet, Animated} from 'react-native';
 import CheckIcon from '../../../../assets/Success.svg'; // Use your existing icon
-import {styles} from '../../../Components/MainStyles';
-import {useNavigation} from '@react-navigation/native';
 
 const SuccessScreen = ({navigation}: any) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -29,7 +20,6 @@ const SuccessScreen = ({navigation}: any) => {
     ]);
     // Checkmark scaling animation
     animation.start(() => {
-      // Step 3: Navigate after animations
       navigation.replace('MainDrawer');
     });
   }, []);
@@ -76,7 +66,6 @@ const successStyles = StyleSheet.create({
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,

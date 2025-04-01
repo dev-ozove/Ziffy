@@ -1,10 +1,8 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   containerButton: {
     flexDirection: 'row',
@@ -22,7 +20,6 @@ export const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: '90%',
   },
   actionSheet: {
     position: 'absolute',
@@ -51,7 +48,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
-  sheetContainer: {flex: 1, paddingBottom: 200},
+  sheetContainer: {flex: 1},
   sheetContent: {
     paddingHorizontal: 10,
   },
@@ -402,6 +399,183 @@ export const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  headerGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 70,
+    paddingTop: Platform.OS === 'ios' ? 50 : 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  headerContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    //backgroundColor: '#FFAF19',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    height: 60,
+    paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    zIndex: 2,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#141921',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+  },
+  headerButton: {
+    padding: 8,
+    zIndex: 1,
+  },
+  actionButtonsContainer: {
+    paddingHorizontal: 10,
+    gap: 10,
+    marginBottom: 16,
+  },
+  carouselContainer: {
+    width: '100%',
+  },
+  scanButton: {
+    backgroundColor: '#141921',
+    padding: 16,
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+});
+
+export const CarouselStyles = StyleSheet.create({
+  container: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rewardContainer: {
+    width: '100%',
+    height: '100%',
+  },
+  bookingItem: {
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    width: '100%',
+  },
+  bookingHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  vehicleText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#141921',
+    fontFamily: 'DMSans36pt-Bold',
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFAF19',
+    fontFamily: 'DMSans36pt-Bold',
+  },
+  dateText: {
+    fontSize: 12,
+    color: '#666',
+    marginVertical: 8,
+    fontFamily: 'DMSans36pt-Regular',
+  },
+  passengerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 8,
+    borderLeftWidth: 1,
+    borderLeftColor: '#EEE',
+  },
+  passengerText: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 4,
+    fontFamily: 'DMSans36pt-Medium',
+  },
+  spaceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 4,
+    paddingVertical: 6,
+  },
+  spaceText: {
+    fontSize: 14,
+    color: '#444',
+    marginLeft: 8,
+    fontFamily: 'DMSans36pt-Regular',
+  },
+  carousel: {
+    flex: 1,
+  },
+  adContainer: {
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#FFAF19',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  adTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFAF19',
+    marginBottom: 8,
+    fontFamily: 'DMSans36pt-Bold',
+  },
+  adDescription: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    fontFamily: 'DMSans36pt-Regular',
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    backgroundColor: '#FFAF19',
+    width: 12,
+  },
+  inactiveDot: {
+    backgroundColor: '#E0E0E0',
   },
 });
 

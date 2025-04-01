@@ -13,6 +13,7 @@ import {useStripe} from '@stripe/stripe-react-native';
 import axios from 'axios';
 import BackendConstants from '../../../Config/Config';
 import {getAuth} from '@react-native-firebase/auth';
+import LoaderZiffy from '../components/Loader/LoaderZiffy';
 export default function PaymentScreen({navigation}) {
   const sampleData = {
     OrderId: 'ORD123456',
@@ -371,7 +372,7 @@ export default function PaymentScreen({navigation}) {
                 paddingVertical: 20,
               }}>
               {localLoading ? (
-                <ActivityIndicator size={'small'} color={'#333'} />
+                <LoaderZiffy />
               ) : (
                 <Text
                   style={{

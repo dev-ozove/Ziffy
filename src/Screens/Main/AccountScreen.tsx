@@ -11,112 +11,122 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useAppSelector} from '../../hooks/useRedux';
 import {getAuth} from '@react-native-firebase/auth';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function AccountScreen() {
   const User = useAppSelector(state => state.user.user);
   const auth = getAuth();
   console.log(User);
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Profile Picture */}
-      <View style={styles.profileContainer}>
-        <Image
-          source={{
-            uri:
-              auth?.currentUser?.photoURL || 'https://via.placeholder.com/150',
-          }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.userName}>
-          {auth?.currentUser?.displayName || 'User Name'}
-        </Text>
-        <TouchableOpacity>
-          <Text style={styles.updateProfileText}>Update Profile Picture</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* User Details */}
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>User Name</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            value={auth?.currentUser?.displayName || 'User Name'}
-            style={styles.input}
-            editable={false}
+    <SafeAreaView
+      style={{
+        flex: 1,
+        marginTop: 30,
+        backgroundColor: '#fff',
+      }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Profile Picture */}
+        <View style={styles.profileContainer}>
+          <Image
+            source={{
+              uri:
+                auth?.currentUser?.photoURL ||
+                'https://via.placeholder.com/150',
+            }}
+            style={styles.profileImage}
           />
-          <MaterialIcons name="edit" size={20} color="#FFC107" />
+          <Text style={styles.userName}>
+            {auth?.currentUser?.displayName || 'User Name'}
+          </Text>
+          <TouchableOpacity>
+            <Text style={styles.updateProfileText}>Update Profile Picture</Text>
+          </TouchableOpacity>
         </View>
-      </View>
 
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>Email</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            value={auth?.currentUser?.email || 'User Email'}
-            style={styles.input}
-            editable={false}
-          />
-          <MaterialIcons name="edit" size={20} color="#FFC107" />
+        {/* User Details */}
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>User Name</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              value={auth?.currentUser?.displayName || 'User Name'}
+              style={styles.input}
+              editable={false}
+            />
+            <MaterialIcons name="edit" size={20} color="#FFC107" />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>Phone Number</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            value={
-              auth?.currentUser?.phoneNumber || 'Phone Number is not available'
-            }
-            style={styles.input}
-            editable={false}
-          />
-          <MaterialIcons name="edit" size={20} color="#FFC107" />
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Email</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              value={auth?.currentUser?.email || 'User Email'}
+              style={styles.input}
+              editable={false}
+            />
+            <MaterialIcons name="edit" size={20} color="#FFC107" />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>Date of Birth</Text>
-        <View style={styles.inputWrapper}>
-          <TextInput
-            value={User?.dob || 'Update Your DOB'}
-            style={styles.input}
-            editable={false}
-          />
-          <MaterialIcons name="edit" size={20} color="#FFC107" />
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Phone Number</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              value={
+                auth?.currentUser?.phoneNumber ||
+                'Phone Number is not available'
+              }
+              style={styles.input}
+              editable={false}
+            />
+            <MaterialIcons name="edit" size={20} color="#FFC107" />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.fieldContainer}>
-        <Text style={styles.label}>Gender</Text>
-        <View style={styles.genderPicker}>
-          {['Male', 'Female', 'Other'].map((gender, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.genderOption,
-                User?.gender.toLowerCase() === gender.toLowerCase() &&
-                  styles.genderOptionSelected,
-              ]}
-              onPress={() => console.log(`Selected: ${gender}`)} // Replace with your state update logic
-            >
-              <Text
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Date of Birth</Text>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              value={User?.dob || 'Update Your DOB'}
+              style={styles.input}
+              editable={false}
+            />
+            <MaterialIcons name="edit" size={20} color="#FFC107" />
+          </View>
+        </View>
+
+        <View style={styles.fieldContainer}>
+          <Text style={styles.label}>Gender</Text>
+          <View style={styles.genderPicker}>
+            {['Male', 'Female', 'Other'].map((gender, index) => (
+              <TouchableOpacity
+                key={index}
                 style={[
-                  styles.genderText,
+                  styles.genderOption,
                   User?.gender.toLowerCase() === gender.toLowerCase() &&
-                    styles.genderTextSelected,
-                ]}>
-                {gender}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                    styles.genderOptionSelected,
+                ]}
+                onPress={() => console.log(`Selected: ${gender}`)} // Replace with your state update logic
+              >
+                <Text
+                  style={[
+                    styles.genderText,
+                    User?.gender.toLowerCase() === gender.toLowerCase() &&
+                      styles.genderTextSelected,
+                  ]}>
+                  {gender}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      </View>
 
-      {/* Save Button */}
-      <TouchableOpacity style={styles.saveButton}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        {/* Save Button */}
+        <TouchableOpacity style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

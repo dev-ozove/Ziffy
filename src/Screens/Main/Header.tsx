@@ -10,104 +10,78 @@ import React from 'react';
 import Main_menu from '../../../assets/Main_menu.svg';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useOzove} from '../../Context/ozoveContext';
-import {styles} from '../../Components/MainStyles';
+import {Styles, styles} from '../../Components/MainStyles';
+import LinearGradient from 'react-native-linear-gradient';
+import Logo from '../../../assets/Logo_1.svg';
 
 interface HeaderProps {
   navigation: any;
   // handleSuggestions: (querry: any, isPickup: any) => void;
-  handleLocationSelect: (location: any, isPickup: any) => void;
+  // handleLocationSelect: (location: any, isPickup: any) => void;
 }
 export default function Header({
   navigation,
-  handleLocationSelect,
-}: HeaderProps) {
-  // const {_getlocationSuggestions} = useOzove();
-  // const [activeInput, setActiveInput] = React.useState('');
-  // const [searchText, setSearchText] = React.useState('');
-  // const [loactionSuggestions, setLocationSuggestions] = React.useState([]);
-  // const [showSuggestion, setShowSuggestion] = React.useState(false);
-
-  // const handleSuggestions = async (querry: any) => {
-  //   const suggestions = await _getlocationSuggestions(querry);
-  //   setLocationSuggestions(suggestions);
-  // };
-
-  // const handleSelectLocation = (location: any) => {
-  //   setShowSuggestion(false);
-  //   setSearchText(location?.formatted);
-  //   handleLocationSelect(location, false);
-  // };
-
+}: //handleLocationSelect,
+HeaderProps) {
   return (
-    <View
-      style={{
-        position: 'absolute',
-        top: 5,
-        // left: 10,
-        // width: '95%',
-        flexDirection: 'row',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        zIndex: 2,
-        // backgroundColor: 'transparent',
-        // height: 120,
-        // backgroundColor: 'red',
-        // paddingTop: insets.top,
-        paddingHorizontal: 10,
-      }}>
+    <>
       <View style={{flex: 1}}>
-        <View
-          style={
-            {
-              // flex: 1,
-              // flexDirection: 'row',
-              // justifyContent: 'space-between',
-            }
-          }>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+        <LinearGradient
+          colors={['rgba(255, 175, 25, 1)', 'rgba(255, 175, 25, 0)']}
+          style={[styles.headerGradient, {flex: 1, width: '100%'}]}
+          start={{x: 0, y: 0}}
+          end={{x: 0, y: 1}}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              width: '100%',
+            }}>
+            <View style={{marginLeft: 20}}>
+              <TouchableOpacity style={styles.headerButton}>
+                <View>
+                  <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                    <View
+                      style={{
+                        height: 40,
+                        width: 40,
+                        borderRadius: 100,
+                        backgroundColor: 'white',
+                        elevation: 5,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        transform: [{translateY: -20}],
+                      }}>
+                      <Main_menu />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </View>
+
             <View
               style={{
-                height: 50,
-                width: 50,
-                // padding: 10,
-                borderRadius: 100,
-                backgroundColor: 'white',
-                elevation: 5,
+                flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Main_menu />
-            </View>
-          </TouchableOpacity>
-          {/* <View style={{ marginLeft: 20 }}>
-            <TouchableOpacity onPress={() => navigation.push('QRScanner')}>
               <View
                 style={{
-                  height: 50,
-                  width: 90,
-                  padding: 10,
-                  borderRadius: 100,
-                  backgroundColor: 'white',
-                  elevation: 5,
-                  flexDirection: 'row',
+                  flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <View style={{ flexDirection: 'row' }}>
-                  <View style={{ marginRight: 10 }}>
-                    <Text style={{ color: '#333', fontWeight: 'bold' }}>
-                      Scan
-                    </Text>
-                  </View>
-                  <View>
-                    <Scan_Icon />
-                  </View>
-                </View>
+                <Logo
+                  style={{transform: [{translateX: -40}, {translateY: -20}]}}
+                  width={80}
+                  height={80}
+                  fill={'#141921'}
+                />
               </View>
-            </TouchableOpacity>
-          </View> */}
-        </View>
+            </View>
+          </View>
+        </LinearGradient>
       </View>
-    </View>
+    </>
   );
 }

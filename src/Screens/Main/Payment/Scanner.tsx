@@ -1,142 +1,150 @@
-import React, {useState, useCallback} from 'react';
-import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
-import QRCodeScanner from 'react-native-qrcode-scanner';
-import {RNCamera} from 'react-native-camera';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  StatusBar,
+} from 'react-native';
+import Svg, {Path} from 'react-native-svg';
+import ScannerLogo from '../../../../assets/Scanner/scanner_logo.svg';
 
-export default function Scanner({navigation}: any) {
-  const [flashEnabled, setFlashEnabled] = useState(false);
-  const [scannedData, setScannedData] = useState<string | null>(null);
-  const [error, set_error] = useState('');
+const {width} = Dimensions.get('window');
 
-  // Reset scanner state on screen focus
-  useFocusEffect(
-    useCallback(() => {
-      setScannedData(null);
-      set_error('');
-    }, []),
-  );
-
-  const onRead = (e: any) => {
-    try {
-      const parsedData = JSON.parse(e.data); // Parse the string as JSON
-      if (parsedData.OrderId) {
-        setScannedData(`Order ID: ${parsedData.OrderId}`); // Display Order ID
-        navigation.push('Payment_screen', {OrderId: parsedData.OrderId});
-        set_error(''); // Clear any previous error
-      } else {
-        set_error('Invalid QR Code Try Again ');
-        setScannedData(null);
-      }
-    } catch (err) {
-      set_error('Invalid QR Code Try Again.... ');
-      setScannedData(null);
-    }
-  };
-
-  const toggleFlash = () => {
-    setFlashEnabled(!flashEnabled);
-  };
-
+const Scanner = ({navigation}: any) => {
   return (
-    <View style={styles.container}>
-      {/* Display the scanned result */}
-      {scannedData && (
-        <View style={styles.resultContainer}>
-          <Text style={styles.resultText}>{scannedData}</Text>
+    <>
+      <StatusBar backgroundColor={'#FFEFD5'} />
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Svg
+            height="100%"
+            width="100%"
+            viewBox="0 0 1440 320"
+            style={styles.headerWave}>
+            <Path
+              fill="#FFEFD5"
+              d="M0,64L60,96C120,128,240,192,360,192C480,192,600,128,720,117.3C840,107,960,149,1080,160C1200,171,1320,149,1380,138.7L1440,128L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
+            />
+          </Svg>
         </View>
-      )}
-      {error && (
-        <View style={styles.resultContainer}>
-          <Text style={[styles.resultText, {color: 'red', fontWeight: 'bold'}]}>
-            {error}
-          </Text>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            transform: [{translateY: -50}],
+          }}>
+          <ScannerLogo />
         </View>
-      )}
 
-      {/* QR Code Scanner */}
-      <QRCodeScanner
-        onRead={onRead}
-        flashMode={
-          flashEnabled
-            ? RNCamera.Constants.FlashMode.torch
-            : RNCamera.Constants.FlashMode.off
-        }
-        containerStyle={styles.scannerContainer}
-        topViewStyle={styles.zeroContainer}
-        bottomViewStyle={styles.zeroContainer}
-        cameraStyle={styles.cameraStyle}
-      />
+        <View style={styles.wavyContainer}>
+          <Svg
+            height="100%"
+            width="100%"
+            viewBox="0 140 1440 320"
+            style={styles.svg}>
+            <Path
+              fill="#FFEFD1" // Same as the beige background color
+              d="M0,96L60,122.7C120,149,240,203,360,202.7C480,203,600,149,720,138.7C840,128,960,160,1080,160C1200,160,1320,128,1380,112L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+            />
+          </Svg>
+        </View>
+        <View style={{bottom: 20}}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>Scan to Check In</Text>
+            <Text style={styles.description}>
+              Dummy text of the printing and typesetting industry. Lorem Ipsum
+              has been the industry's standard dummy text ever since the 1500s.
+            </Text>
+          </View>
 
-      {/* Flash Icon */}
-      <TouchableOpacity style={styles.flashButton} onPress={toggleFlash}>
-        <Icon
-          name={flashEnabled ? 'flashlight' : 'flashlight-off'}
-          size={30}
-          color="white"
-        />
-      </TouchableOpacity>
-
-      {/* Bottom Instructions */}
-      <View style={styles.bottomContent}>
-        <Text style={styles.instructionText}>
-          Align the QR code within the frame to scan
-        </Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={() => {
+                navigation.push('QRScanner');
+              }}>
+              <Text style={styles.buttonText}>Let’s Ride</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-    </View>
+    </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
   },
-  resultContainer: {
-    position: 'absolute',
-    top: 50,
+  headerContainer: {
     width: '100%',
-    paddingHorizontal: 20,
-    zIndex: 1,
+    height: 100, // Adjust height for your design
+    backgroundColor: '#FFEFD5',
   },
-  resultText: {
-    color: '#fff',
+  headerWave: {
+    position: 'absolute',
+    bottom: -90,
+  },
+  wavyContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: 250,
+    backgroundColor: '#FFEFD1',
+  },
+  svg: {
+    position: 'absolute',
+    top: -50, // Adjust the SVG to overlap the red square
+  },
+  header: {
+    marginTop: 50,
+    alignItems: 'center',
+  },
+
+  textContainer: {
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  description: {
     fontSize: 16,
+    color: '#666',
     textAlign: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 10,
+  },
+  buttonContainer: {
+    marginTop: 30,
+    alignItems: 'center',
+  },
+  nextButton: {
+    backgroundColor: '#FFA500',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
     borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
+    marginBottom: 10,
   },
-  scannerContainer: {
-    flex: 1,
-  },
-  cameraStyle: {
-    height: '100%',
-    width: '100%',
-  },
-  zeroContainer: {
-    height: 0,
-    flex: 0,
-  },
-  flashButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    zIndex: 2,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 25,
-    padding: 10,
-  },
-  bottomContent: {
-    position: 'absolute',
-    bottom: 40,
-    width: '100%',
-    paddingHorizontal: 20,
-  },
-  instructionText: {
-    color: '#fff',
+  buttonText: {
+    color: '#FFF',
     fontSize: 16,
-    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  rideText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
   },
 });
+
+export default Scanner;

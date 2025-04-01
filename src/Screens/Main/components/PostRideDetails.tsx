@@ -9,6 +9,8 @@ import {
   StyleSheet,
   Dimensions,
   BackHandler,
+  Modal,
+  Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BackIcon from '../../../../assets/back_icon.svg';
@@ -16,14 +18,44 @@ import CancelModal from './CancelModal';
 import {useAppDispatch, useAppSelector} from '../../../hooks/useRedux';
 import {clearBookings} from '../../../Redux/Features/BookingsSlice';
 
+import PickupLocationIcon from '../../../../assets/Pickup_icon.svg';
+
 const {width, height} = Dimensions.get('window');
 
-const PostRideDetails = ({onTrackRidePress, onCancelRidePress}) => {
-  const [passengerCount, setPassengerCount] = useState('25');
+const PostRideDetails = ({
+  onTrackRidePress,
+  onCancelRidePress,
+  bookingData,
+}: any) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const Bookings = useAppSelector(state => state.bookings.bookings);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
+  const [isPolicyModalVisible, setPolicyModalVisible] = useState(false); // New state for policy modal
+
+  const PolicyDetailsModal = () => (
+    <Modal
+      visible={isPolicyModalVisible}
+      transparent={true}
+      animationType="fade">
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Cancellation Policy</Text>
+          <Text style={styles.modalText}>
+            Cancellations made seven days or less before a trip are not eligible
+            for a refund. For cancellations made more than seven days in
+            advance, a 50% refund will be provided. No-shows will be charged the
+            full amount.
+          </Text>
+          <Pressable
+            style={styles.modalCloseButton}
+            onPress={() => setPolicyModalVisible(false)}>
+            <Text style={styles.modalCloseText}>Close</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
     <>
@@ -38,39 +70,68 @@ const PostRideDetails = ({onTrackRidePress, onCancelRidePress}) => {
           </View>
         </TouchableOpacity>
         <View style={styles.statusContainer}>
-          <View style={styles.roundedBox} />
-          <Text style={styles.statusText}>Pending</Text>
+          <View
+            style={[
+              styles.roundedBox,
+              {
+                backgroundColor:
+                  bookingData?.status?.statusCode === 0
+                    ? '#F8AB1E'
+                    : bookingData?.status?.statusCode === 1
+                    ? '#04fb00'
+                    : bookingData?.status?.statusCode === 2
+                    ? '#001aff'
+                    : bookingData?.status?.statusCode === 3
+                    ? '#ff0000'
+                    : '#fff',
+              },
+            ]}
+          />
+          <Text style={styles.statusText}>
+            {bookingData?.status?.bookingStatus}
+          </Text>
         </View>
         <Text style={styles.info}>
-          Heads up, Mark We're processing your request and sending confirmation
+          Heads up, Zify is processing your request and sending confirmation
           shortly
         </Text>
-        <Text style={styles.date}>14-Jan-2023 16:32</Text>
+        <Text style={styles.date}>{bookingData?.Date}</Text>
         <Text style={styles.order}>
-          Order# <Text style={{color: '#F8AB1E'}}>zen4587</Text>
+          Order <Text style={{color: '#F8AB1E'}}>#{bookingData?.OrderId}</Text>
         </Text>
 
         <View style={styles.locationContainer}>
           <View style={styles.locationBox}>
-            <Icon name="place" size={22} color="black" />
-            <Text style={styles.locationText}>RAC Arena</Text>
+            <PickupLocationIcon />
+            <Text style={styles.locationText}>{bookingData?.To}</Text>
           </View>
           <View style={styles.locationBox}>
-            <Icon name="place" size={22} color="black" />
-            <Text style={styles.locationText}>Airport</Text>
+            <PickupLocationIcon />
+            <Text style={styles.locationText}>{bookingData?.From}</Text>
           </View>
         </View>
 
         <View style={styles.vehicleContainer}>
           <Image
-            source={require('../../../../assets/Vechicles/VITO_large_1.png')}
+            source={{uri: bookingData?.bookedVehicle?.image}}
             style={styles.vehicleImage}
           />
 
-          <View>
-            <Text style={styles.vehicleType}>Small Van</Text>
-            <Text style={styles.vehicleSeats}>8 seater</Text>
-            <Text style={styles.vehiclePrice}>$4.50</Text>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+            }}>
+            <Text style={styles.vehicleType}>
+              {bookingData?.bookedVehicle?.title}
+            </Text>
+            <Text style={styles.vehicleSeats}>
+              {bookingData?.bookedVehicle?.details?.maximum_capacity} Seater
+            </Text>
+            <Text style={styles.vehiclePrice}>
+              {bookingData?.bookedVehicle?.details?.per_person_price}/person
+            </Text>
           </View>
         </View>
 
@@ -82,27 +143,22 @@ const PostRideDetails = ({onTrackRidePress, onCancelRidePress}) => {
               eligible for a refund
             </Text>
             <View style={styles.detailsButtonCON}>
-              <TouchableOpacity style={styles.detailsButton}>
+              <TouchableOpacity
+                onPress={() => setPolicyModalVisible(true)}
+                style={styles.detailsButton}>
                 <Text style={styles.detailsButtonText}>Details</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
 
-        <View style={styles.totalPassengersCon}>
-          <Text style={styles.totalPassengers}>Total Passengers</Text>
-          <TextInput
-            style={styles.passengerInput}
-            value={passengerCount}
-            onChangeText={text => setPassengerCount(text)}
-            keyboardType="numeric"
-            editable={true}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.trackButton} onPress={onTrackRidePress}>
-          <Text style={styles.trackButtonText}>Track Ride</Text>
-        </TouchableOpacity>
+        {bookingData?.status?.statusCode != 0 && (
+          <TouchableOpacity
+            style={styles.trackButton}
+            onPress={onTrackRidePress}>
+            <Text style={styles.trackButtonText}>Track Ride</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           style={styles.cancelButton}
           //   onPress={() => setModalVisible(true)}
@@ -115,18 +171,15 @@ const PostRideDetails = ({onTrackRidePress, onCancelRidePress}) => {
         onClose={() => setModalVisible(false)}
         onConfirm={() => {
           console.log('Ride Canceled');
-          dispatch(clearBookings());
-          setModalVisible(false);
-          navigation.navigate('Main');
         }}
       /> */}
+      <PolicyDetailsModal />
     </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: width * 0.01,
     backgroundColor: 'white',
   },
   statusContainer: {
@@ -137,7 +190,6 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: 'orange',
   },
   statusText: {
     marginLeft: 6,
@@ -184,7 +236,7 @@ const styles = StyleSheet.create({
   },
   vehicleContainer: {
     width: '40%',
-    height: '20%',
+    paddingBottom: 10,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
@@ -210,16 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  policyContainer: {
-    backgroundColor: '#FFAF1933',
-    padding: 15,
-    borderRadius: 8,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-    marginVertical: 10,
-  },
+
   policyContainer1: {
     flexDirection: 'row',
     marginTop: 5,
@@ -229,25 +272,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  policyText: {
-    flex: 1.5,
-    fontSize: 10,
-    fontWeight: '400',
-  },
   detailsButtonCON: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignSelf: 'center',
   },
-  detailsButton: {
-    backgroundColor: '#F8AB1E',
-    padding: width * 0.02,
-    alignSelf: 'flex-end',
-    borderRadius: 30,
-  },
-  detailsButtonText: {
-    color: 'Black',
-    fontSize: 10,
-    fontWeight: '600',
-  },
+
   totalPassengersCon: {
     borderWidth: 1,
     padding: 8,
@@ -285,6 +316,75 @@ const styles = StyleSheet.create({
     color: '#FF0000',
     fontSize: 24,
     fontWeight: '700',
+  },
+
+  // Updated policy container styles
+  policyContainer: {
+    backgroundColor: '#FFAF1933',
+    padding: 15,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+  policyContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+    backgroundColor: 'red',
+  },
+  policyText: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '400',
+    marginRight: 10,
+  },
+  detailsButton: {
+    backgroundColor: '#F8AB1E',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 15,
+    width: '40%',
+  },
+  detailsButtonText: {
+    color: 'black',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // New modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 10,
+    color: '#333',
+  },
+  modalText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#666',
+    marginBottom: 15,
+  },
+  modalCloseButton: {
+    backgroundColor: '#F8AB1E',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'flex-end',
+  },
+  modalCloseText: {
+    color: 'black',
+    fontWeight: '600',
   },
 });
 

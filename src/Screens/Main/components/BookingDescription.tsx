@@ -37,8 +37,8 @@ const BookingDescription: React.FC<BookingDescription> = ({
   set_contactDetails,
   setShowPaymentView,
   contactDetails,
-  notes,
-  set_notes,
+  // notes,
+  // set_notes,
   selectedVehicle,
   setPassenger_Count,
   passenger_Count,
@@ -281,7 +281,7 @@ const BookingDescription: React.FC<BookingDescription> = ({
             onChangeText={text => setPromoCode(text)}
           />
         </View>
-        <View style={styles.notesContainer}>
+        {/* <View style={styles.notesContainer}>
           <TextInput
             style={styles.notesInput}
             placeholder="Notes For Driver"
@@ -290,7 +290,7 @@ const BookingDescription: React.FC<BookingDescription> = ({
             value={notes}
             onChangeText={set_notes}
           />
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

@@ -17,6 +17,8 @@ export const store = configureStore({
       serializableCheck: false, // Disable serializable check
     }),
 });
+export const selectPerthLocation = (state: RootState) =>
+  state.bookings.perthLocation;
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;

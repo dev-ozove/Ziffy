@@ -103,7 +103,12 @@ export default function BookingsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        marginTop: 30,
+        backgroundColor: '#fff',
+      }}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <BackIcon />

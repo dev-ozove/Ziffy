@@ -15,12 +15,13 @@ import {getAuth} from '@react-native-firebase/auth';
 
 interface AuthContextType {
   testFunction: () => void;
-  _handleBooking: (orderID: string, status: string) => Promise<void>;
+  _handleBooking: (orderID: string, sendVehicleData: any) => Promise<void>;
   _getStripePublishableKey: () => Promise<string | undefined>;
   _getGeoApiKey: () => Promise<string | undefined>;
   _getlocationSuggestions: (query: string) => Promise<string[] | undefined>;
   _updateBookingData: (key: string, value: any) => void;
   _update_BookingData: (updates: any) => Promise<void>;
+  _getInitialCoordinates: () => Promise<void>;
   Generate_OrderID: () => string;
   vechicleData: any;
   ServerLoading: boolean;
@@ -58,10 +59,11 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
     contactDetails: '',
     driverNote: '',
     TimeStamp: '',
-    Status: '',
     AdditionalServices: [],
     PassengerCount: null,
     TotalPrice: null,
+    bookedVehicle: null,
+    status: null,
   });
 
   const [vechicleData, set_vechicleData] = useState<any>([]);
@@ -89,17 +91,18 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
   }, []);
 
   useEffect(() => {
-    if (!User?.uid) return; // Ensure User is available before subscribing
+    if (!User?.uid || !auth.currentUser?.uid) return; // Ensure User is available before subscribing
 
     const unsubscribe = firestore()
       .collection('bookings')
       .doc(`${auth.currentUser?.uid}`)
       .collection('individual_bookings')
+      .orderBy('TimeStamp', 'desc')
       .onSnapshot(
         snapshot => {
           const bookings: bookingData[] = snapshot.docs.map(doc => {
             const data = doc.data();
-
+            const timeStamp = data.TimeStamp?.toDate() || new Date(0);
             return {
               id: doc.id, // Document ID
               OrderId: data.OrderId || '',
@@ -120,11 +123,15 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
               createdAtDate: data.createdAtDate || '',
               contactDetails: data.contactDetails || '',
               driverNote: data.driverNote || '',
-              TimeStamp: data.TimeStamp || '',
-              Status: data.Status || '',
+              TimeStamp: timeStamp || '',
+              //Status: data.Status || '',
               AdditionalServices: data.AdditionalServices || [],
               PassengerCount: data.PassengerCount || 0,
               TotalPrice: data.TotalPrice || 0,
+
+              // Add other properties as needed
+              bookedVehicle: data.bookedVehicle || null,
+              status: data?.status || null,
             };
           });
 
@@ -142,6 +149,32 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
 
   const testFunction = () => {
     console.log('Test from Context test function');
+  };
+
+  const _getInitialCoordinates = async () => {
+    setLoading(true);
+    try {
+      const docSnapshot = await firestore()
+        .collection('Location')
+        .doc('MapsInitialCoordinates')
+        .get();
+
+      if (docSnapshot.exists) {
+        const data = docSnapshot.data();
+        setLoading(false);
+        return data; // Return the coordinates data directly
+      } else {
+        console.warn('Initial coordinates document does not exist');
+        set_error('Initial coordinates not found');
+        setLoading(false);
+        return undefined;
+      }
+    } catch (error) {
+      console.error('Error fetching initial coordinates:', error);
+      set_error('Failed to fetch initial coordinates');
+      setLoading(false);
+      return undefined;
+    }
   };
 
   const reinitialize = () => {
@@ -165,10 +198,11 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
       contactDetails: '',
       driverNote: '',
       TimeStamp: '',
-      Status: '',
       AdditionalServices: [],
       PassengerCount: 0,
       TotalPrice: 0,
+      bookedVehicle: null,
+      status: null,
     });
   };
   const _updateBookingData = (key: string, value: any) => {
@@ -199,10 +233,9 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
   console.log(vechicleData);
 
   const Generate_OrderID = () => {
-    const randomPart = Math.floor(100000 + Math.random() * 900000); // Generate 6 random digits
-    const timestampPart = Date.now().toString().slice(-2); // Use the last 2 digits of the timestamp
-
-    return `${randomPart}${timestampPart}`; // Combine to form an 8-digit number
+    const timestamp = Date.now(); // Milliseconds since epoch
+    const randomStr = Math.random().toString(36).substring(2, 12); // 10-character random string
+    return `${timestamp}-${randomStr}`; // e.g., "1698765432112-abcd123xyz"
   };
 
   const _getGeoApiKey = async (): Promise<string | undefined> => {
@@ -287,7 +320,7 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
       if (doc.exists) {
         const data = doc.data();
         setLoading(false);
-        return data?.KEY ?? undefined; // Ensure a string or undefined is returned
+        return data?.key ?? undefined; // Ensure a string or undefined is returned
       } else {
         console.warn('Stripe key document does not exist.');
         setLoading(false);
@@ -302,23 +335,44 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
 
   const _handleBooking = async (
     OrderId: string,
-    Status: string,
+    sendVehicleData: any,
   ): Promise<void> => {
     setLoading(true);
+    const Status = {
+      bookingStatus: 'Pending',
+      statusCode: 0,
+    };
 
-    if ((bookingData?.OrderId && OrderId !== '', Status !== '')) {
+    if (
+      (bookingData?.OrderId && OrderId !== '',
+      Status.bookingStatus !== '' && !bookingData?.contactDetails)
+    ) {
       const data = {
         ...bookingData,
         OrderId: OrderId,
-        Status: Status,
+        status: Status,
+        bookedVehicle: sendVehicleData,
+        user_uid: `${auth?.currentUser?.uid}`,
+        booking_uid: OrderId,
+
+        // contactDetails: {
+        //   email: `${auth?.currentUser?.email}`,
+        //   Name: `${auth?.currentUser?.displayName}`,
+        //   phone: `${auth?.currentUser?.phoneNumber}`,
+        //   uid: `${auth?.currentUser?.uid}`,
+        //   photoURL: `${auth?.currentUser?.photoURL}`,
+        // },
+        contactDetails: `${auth?.currentUser?.email}`,
       };
+      console.log('Data Before uploading', data);
 
       try {
         await firestore()
           .collection('bookings')
           .doc(auth.currentUser?.uid)
           .collection('individual_bookings')
-          .add(data)
+          .doc(OrderId)
+          .set(data)
           .then(() => {
             setLoading(false);
             reinitialize();
@@ -343,10 +397,11 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
     _handleBooking,
     _getStripePublishableKey,
     _getlocationSuggestions,
-    Generate_OrderID,
     _getGeoApiKey,
     _updateBookingData,
     _update_BookingData,
+    _getInitialCoordinates,
+    Generate_OrderID,
     ServerLoading,
     bookingData,
     vechicleData,
