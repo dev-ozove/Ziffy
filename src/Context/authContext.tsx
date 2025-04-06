@@ -53,7 +53,7 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
   const [userDeviceTheme, set_userDeviceTheme] = useState<any>(null);
   const user = useAppSelector(state => state.user.user); // Live Redux state
   const dispatch = useDispatch();
-  const [confirmation, setConfirmation] = useState(null);
+  const [confirmation, setConfirmation] = useState<any>(null);
   const [isOtpSent, setIsOtpSent] = useState(false);
 
   // Updated check_for_user returns a Promise with user details if exists.
@@ -153,6 +153,7 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
     }
   };
 
+  // In sendOtp function
   const sendOtp = async (phoneNumber: string) => {
     try {
       const confirmationResult = await auth().signInWithPhoneNumber(
@@ -167,16 +168,18 @@ export const AuthContextProvider: React.FC<OzoveProviderProps> = ({
     }
   };
 
+  // In confirmOtp function
   const confirmOtp = async (code: string) => {
     if (!confirmation) {
       throw new Error('No confirmation available');
     }
+
     try {
       await confirmation.confirm(code);
       setIsOtpSent(false);
     } catch (error) {
       console.error('Error confirming OTP:', error);
-      throw error;
+      throw new Error('Invalid verification code');
     }
   };
 

@@ -95,7 +95,7 @@ const RootNavigator = ({isSignedIn}: any) => {
 
   return (
     <StripeProvider publishableKey={stripePublicKey}>
-      <Stack.Navigator initialRouteName="Splash">
+      <Stack.Navigator initialRouteName="User_Registration">
         <Stack.Screen name="Splash" options={{headerShown: false}}>
           {(props: any) => <SplashScreen {...props} isSignedIn={isSignedIn} />}
         </Stack.Screen>
