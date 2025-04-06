@@ -3,11 +3,13 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
-  Button,
   TouchableOpacity,
-  TouchableHighlight,
-  TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import MainLogo from '../../../assets/Logo_main.svg';
 
@@ -20,6 +22,12 @@ import auth from '@react-native-firebase/auth';
 import PhoneInput from 'react-native-phone-number-input';
 import {useAuth} from '../../Context/authContext';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
+const {width, height} = Dimensions.get('window');
 
 const LoginScreen = ({navigation}: any) => {
   const [value, setValue] = useState('');
@@ -28,6 +36,7 @@ const LoginScreen = ({navigation}: any) => {
   const [showMessage, setShowMessage] = useState(false);
   const phoneInput = useRef<PhoneInput>(null);
   const [loading, setLoading] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   const {signInWithGoogle, sendOtp, isOtpSent} = useAuth();
 
@@ -83,80 +92,96 @@ const LoginScreen = ({navigation}: any) => {
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        marginTop: 30,
-        backgroundColor: '#fff',
-      }}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#fff',
-          paddingTop: 40,
-        }}>
-        <View style={{}}>
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            <View style={{marginBottom: 10}}>
-              <Text
-                style={{
-                  fontSize: 22,
-                  fontFamily: 'DMSans36pt-SemiBold',
-                  color: '#141921',
-                }}>
-                Welcome to{' '}
-              </Text>
-            </View>
-            <MainLogo />
-            <Text
-              style={{
-                color: '#141921',
-                fontFamily: 'DMSans36pt-ExtraBold',
-                fontSize: 26,
-                marginVertical: 5,
-              }}>
-              Login to your account
-            </Text>
-            <Text
-              style={{
-                color: '#141921',
-                fontFamily: 'DMSans36pt-Medium',
-                fontSize: 16,
-              }}>
-              Enter your details below to continue ordering
-            </Text>
-          </View>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'center',
+            paddingBottom: Platform.OS === 'ios' ? hp('10%') : hp('5%'),
+          }}
+          showsVerticalScrollIndicator={false}>
           <View
             style={{
-              marginTop: 10,
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#fff',
+              paddingHorizontal: wp('5%'),
             }}>
-            <View style={{marginTop: 10}}>
+            <View style={{width: '100%', alignItems: 'center'}}>
+              <View style={{marginBottom: hp('2%')}}>
+                <Text
+                  style={{
+                    fontSize: wp('6%'),
+                    fontFamily: 'DMSans36pt-SemiBold',
+                    color: '#141921',
+                    textAlign: 'center',
+                  }}>
+                  Welcome to{' '}
+                </Text>
+              </View>
+              <MainLogo width={wp('40%')} height={wp('40%')} />
               <Text
                 style={{
                   color: '#141921',
-                  fontSize: 18,
+                  fontFamily: 'DMSans36pt-ExtraBold',
+                  fontSize: wp('7%'),
+                  marginVertical: hp('1%'),
+                  textAlign: 'center',
+                }}>
+                Login to your account
+              </Text>
+              <Text
+                style={{
+                  color: '#141921',
+                  fontFamily: 'DMSans36pt-Medium',
+                  fontSize: wp('4%'),
+                  textAlign: 'center',
+                  marginBottom: hp('3%'),
+                }}>
+                Enter your details below to continue ordering
+              </Text>
+            </View>
+
+            <View style={{width: '100%', marginTop: hp('2%')}}>
+              <Text
+                style={{
+                  color: '#141921',
+                  fontSize: wp('4.5%'),
                   fontFamily: 'DMSans36pt-SemiBold',
-                  marginBottom: 5,
+                  marginBottom: hp('1%'),
                   alignSelf: 'flex-start',
-                  marginLeft: 10,
                 }}>
                 Mobile No.
               </Text>
+
               {/*Phone Number Input Section */}
               <PhoneInput
                 ref={phoneInput}
                 containerStyle={{
                   backgroundColor: '#fff',
-                  alignSelf: 'center',
+                  width: '100%',
                   borderWidth: 1,
                   borderColor: '#ccc',
-                  borderRadius: 5,
+                  borderRadius: 8,
+                  height: hp('7%'),
                 }}
                 textContainerStyle={{
                   backgroundColor: '#fff',
-                  borderRadius: 14,
+                  borderRadius: 8,
+                  height: '100%',
+                }}
+                textInputStyle={{
+                  height: '100%',
+                  fontSize: wp('4%'),
+                }}
+                codeTextStyle={{
+                  height: '100%',
+                  fontSize: wp('4%'),
                 }}
                 defaultCode="IN"
                 layout="first"
@@ -168,70 +193,119 @@ const LoginScreen = ({navigation}: any) => {
                 }}
                 autoFocus
               />
-            </View>
-            <View>
+
               {/*Login Button Section */}
               <TouchableOpacity
                 onPress={handleLogin}
                 disabled={loading}
                 style={{
-                  marginTop: 10,
-                  marginHorizontal: 11,
-                  height: 50,
+                  marginTop: hp('3%'),
+                  height: hp('7%'),
                   backgroundColor: loading ? '#A8A8A8' : '#FFAF19',
-                  borderRadius: 5,
+                  borderRadius: 8,
                   justifyContent: 'center',
                   alignItems: 'center',
+                  elevation: 2,
+                  shadowColor: '#000',
+                  shadowOffset: {width: 0, height: 2},
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
                 }}>
-                <Text
-                  style={{
-                    color: '#333',
-                    fontSize: 20,
-                    fontFamily: 'DMSans36pt-SemiBold',
-                  }}>
-                  {loading ? 'Sending...' : 'Continue'}
-                </Text>
+                {loading ? (
+                  <ActivityIndicator color="#333" size="small" />
+                ) : (
+                  <Text
+                    style={{
+                      color: '#333',
+                      fontSize: wp('5%'),
+                      fontFamily: 'DMSans36pt-SemiBold',
+                    }}>
+                    Continue
+                  </Text>
+                )}
               </TouchableOpacity>
 
-              {/* <View
-                style={{
-                  alignSelf: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                }}>
-                <View style={{flex: 1}}>
-                  {/* Google Sign-In Button */}
-              {/* <TouchableOpacity
+              {/* Social Login Options - Uncomment if needed */}
+              {/* <View style={{marginTop: hp('4%'), width: '100%'}}>
+                <Text
+                  style={{
+                    color: '#141921',
+                    fontSize: wp('4%'),
+                    fontFamily: 'DMSans36pt-Medium',
+                    textAlign: 'center',
+                    marginBottom: hp('2%'),
+                  }}>
+                  Or continue with
+                </Text>
+                
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                  <TouchableOpacity
                     onPress={handleGoogleLogin}
                     disabled={loading}
                     style={{
                       backgroundColor: '#fff',
                       borderWidth: 1,
                       borderColor: '#ccc',
-                      borderRadius: 5,
-                      paddingVertical: 15,
+                      borderRadius: 8,
+                      paddingVertical: hp('2%'),
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginHorizontal: 10,
-                      opacity: loading ? 0.7 : 1,
+                      width: '30%',
+                      elevation: 1,
+                      shadowColor: '#000',
+                      shadowOffset: {width: 0, height: 1},
+                      shadowOpacity: 0.1,
+                      shadowRadius: 2,
                     }}>
-                    <Google style={{marginRight: 10}} width={20} height={20} />
-                    <Text
-                      style={{
-                        color: '#333',
-                        fontWeight: '600',
-                        fontSize: 16,
-                      }}>
-                      Sign in with Google
-                    </Text>
-                  </TouchableOpacity> 
+                    <Google width={wp('5%')} height={wp('5%')} />
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#fff',
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 8,
+                      paddingVertical: hp('2%'),
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '30%',
+                      elevation: 1,
+                      shadowColor: '#000',
+                      shadowOffset: {width: 0, height: 1},
+                      shadowOpacity: 0.1,
+                      shadowRadius: 2,
+                    }}>
+                    <Facebook width={wp('5%')} height={wp('5%')} />
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#fff',
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 8,
+                      paddingVertical: hp('2%'),
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '30%',
+                      elevation: 1,
+                      shadowColor: '#000',
+                      shadowOffset: {width: 0, height: 1},
+                      shadowOpacity: 0.1,
+                      shadowRadius: 2,
+                    }}>
+                    <Apple width={wp('5%')} height={wp('5%')} />
+                  </TouchableOpacity>
                 </View>
               </View> */}
             </View>
           </View>
-        </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
