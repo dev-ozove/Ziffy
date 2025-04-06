@@ -106,15 +106,34 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
           break;
       }
 
-      const result = await request(permission);
+      try {
+        const result = await request(permission);
 
-      if (result === RESULTS.GRANTED) {
-        setPermissions(prev => ({...prev, [type]: true}));
-        checkPermissions();
-      } else if (result === RESULTS.DENIED) {
+        if (result === RESULTS.GRANTED) {
+          setPermissions(prev => ({...prev, [type]: true}));
+          checkPermissions();
+        } else if (result === RESULTS.DENIED) {
+          Alert.alert(
+            'Permission Required',
+            `Please grant ${type} permission to use this feature.`,
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Open Settings',
+                onPress: () => openSettings(),
+              },
+            ],
+          );
+        }
+      } catch (error) {
+        console.error(`Error requesting ${type} permission:`, error);
+        // If there's an error with the permission request, try opening settings
         Alert.alert(
-          'Permission Required',
-          `Please grant ${type} permission to use this feature.`,
+          'Permission Error',
+          `There was an error requesting ${type} permission. Please enable it in your device settings.`,
           [
             {
               text: 'Cancel',
@@ -128,7 +147,7 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
         );
       }
     } catch (error) {
-      console.error(`Error requesting ${type} permission:`, error);
+      console.error(`Error in permission request flow:`, error);
     }
   };
 
