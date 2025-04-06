@@ -34,7 +34,7 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
   });
   const navigation = useNavigation();
 
-  const getPermissions = (): Record<string, Permission> => {
+  const getPermissions = () => {
     if (Platform.OS === 'ios') {
       return {
         camera: PERMISSIONS.IOS.CAMERA,
@@ -45,33 +45,47 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     return {
       camera: PERMISSIONS.ANDROID.CAMERA,
       location: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      notifications: PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+      notifications: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, // We'll handle notifications separately
     };
+  };
+
+  const checkSinglePermission = async (
+    type: string,
+    permission: Permission,
+  ) => {
+    try {
+      const result = await check(permission);
+      return result === RESULTS.GRANTED;
+    } catch (error) {
+      console.error(`Error checking ${type} permission:`, error);
+      return false;
+    }
   };
 
   const checkPermissions = async () => {
     try {
       const permissionsToCheck = getPermissions();
-      const statuses = await checkMultiple([
-        permissionsToCheck.camera,
-        permissionsToCheck.location,
-        permissionsToCheck.notifications,
-      ]);
+
+      // Check permissions individually to handle errors better
+      const [cameraGranted, locationGranted, notificationsGranted] =
+        await Promise.all([
+          checkSinglePermission('camera', permissionsToCheck.camera),
+          checkSinglePermission('location', permissionsToCheck.location),
+          checkSinglePermission(
+            'notifications',
+            permissionsToCheck.notifications,
+          ),
+        ]);
 
       const updatedPermissions = {
-        camera: statuses[permissionsToCheck.camera] === RESULTS.GRANTED,
-        location: statuses[permissionsToCheck.location] === RESULTS.GRANTED,
-        notifications:
-          statuses[permissionsToCheck.notifications] === RESULTS.GRANTED,
+        camera: cameraGranted,
+        location: locationGranted,
+        notifications: notificationsGranted,
       };
 
       setPermissions(updatedPermissions);
 
-      if (
-        updatedPermissions.camera &&
-        updatedPermissions.location &&
-        updatedPermissions.notifications
-      ) {
+      if (cameraGranted && locationGranted && notificationsGranted) {
         onPermissionsGranted?.();
       }
     } catch (error) {
@@ -91,18 +105,6 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
         return;
       }
 
-      if (type === 'notifications') {
-        Alert.alert(
-          'Notification Permission',
-          'Please enable notifications in your device settings to receive important updates.',
-          [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'Open Settings', onPress: () => openSettings()},
-          ],
-        );
-        return;
-      }
-
       try {
         console.log(`Requesting permission for ${type}:`, permission);
         const result = await request(permission);
@@ -112,7 +114,6 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
           setPermissions(prev => ({...prev, [type]: true}));
           checkPermissions();
         } else {
-          // Handle denied or blocked permissions
           const blocked =
             result === RESULTS.BLOCKED || result === RESULTS.DENIED;
           Alert.alert(
@@ -123,8 +124,8 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
             [
               {text: 'Cancel', style: 'cancel'},
               {
-                text: 'Open Settings',
-                onPress: () => openSettings(),
+                text: blocked ? 'Open Settings' : 'Try Again',
+                onPress: blocked ? openSettings : () => requestPermission(type),
               },
             ],
           );
@@ -133,10 +134,10 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
         console.error(`Error requesting ${type} permission:`, error);
         Alert.alert(
           'Permission Error',
-          `There was an error requesting ${type} permission. Please try again.`,
+          `There was an error requesting ${type} permission. Please try again or enable it in settings.`,
           [
             {text: 'Cancel', style: 'cancel'},
-            {text: 'Open Settings', onPress: () => openSettings()},
+            {text: 'Open Settings', onPress: openSettings},
           ],
         );
       }
@@ -146,7 +147,10 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
   };
 
   useEffect(() => {
-    checkPermissions();
+    const initializePermissions = async () => {
+      await checkPermissions();
+    };
+    initializePermissions();
   }, []);
 
   const renderPermissionButton = (
