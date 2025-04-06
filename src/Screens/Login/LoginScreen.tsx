@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Dimensions,
+  Modal,
 } from 'react-native';
 import MainLogo from '../../../assets/Logo_main.svg';
 
@@ -23,17 +24,17 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import PermissionHandler from '../../Components/PermissionHandler';
 
 const {width, height} = Dimensions.get('window');
 
 const LoginScreen = ({navigation}: any) => {
   const [value, setValue] = useState('');
   const [formattedValue, setFormattedValue] = useState('');
-  const [valid, setValid] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
   const phoneInput = useRef<PhoneInput>(null);
   const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [showPermissions, setShowPermissions] = useState(true);
 
   const {signInWithGoogle, sendOtp, isOtpSent} = useAuth();
 
@@ -88,8 +89,39 @@ const LoginScreen = ({navigation}: any) => {
     }
   };
 
+  const handlePermissionsGranted = () => {
+    setShowPermissions(false);
+  };
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <Modal
+        visible={showPermissions}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowPermissions(false)}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: 12,
+              width: '90%',
+              maxHeight: '80%',
+              padding: 16,
+            }}>
+            <PermissionHandler
+              onPermissionsGranted={handlePermissionsGranted}
+            />
+          </View>
+        </View>
+      </Modal>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}
@@ -166,21 +198,32 @@ const LoginScreen = ({navigation}: any) => {
                   borderColor: '#ccc',
                   borderRadius: 8,
                   height: hp('7%'),
+                  paddingHorizontal: 10,
                 }}
                 textContainerStyle={{
                   backgroundColor: '#fff',
                   borderRadius: 8,
                   height: '100%',
+                  paddingVertical: 0,
                 }}
                 textInputStyle={{
                   height: '100%',
                   fontSize: wp('4%'),
+                  color: '#141921',
+                  paddingVertical: 0,
+                  marginTop: 0,
+                  paddingTop: 0,
+                  paddingBottom: 0,
                 }}
                 codeTextStyle={{
                   height: '100%',
                   fontSize: wp('4%'),
+                  color: '#141921',
+                  paddingVertical: 0,
+                  marginTop: 0,
+                  paddingTop: 0,
+                  paddingBottom: 0,
                 }}
-                // defaultCode="IN"
                 defaultCode="AU"
                 layout="first"
                 onChangeText={text => {
@@ -190,6 +233,8 @@ const LoginScreen = ({navigation}: any) => {
                   setFormattedValue(text);
                 }}
                 autoFocus
+                withDarkTheme={false}
+                withShadow={false}
               />
 
               {/*Login Button Section */}
