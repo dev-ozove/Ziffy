@@ -11,9 +11,6 @@ import {
 import MainLogo from '../../../assets/Logo_main.svg';
 
 //Importing logos for google, facebook and apple login
-import Google from '../../../assets/login/google.svg';
-import Facebook from '../../../assets/login/facebook.svg';
-import Apple from '../../../assets/login/apple.svg';
 import auth from '@react-native-firebase/auth';
 
 import PhoneInput from 'react-native-phone-number-input';
@@ -150,6 +147,7 @@ const LoginScreen = ({navigation}: any) => {
                   backgroundColor: '#fff',
                   borderRadius: 14,
                 }}
+                // defaultCode="IN"
                 defaultCode="AU"
                 layout="first"
                 onChangeText={text => {
