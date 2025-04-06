@@ -18,6 +18,13 @@ target 'Zify' do
   use_frameworks! :linkage => :static
   config = use_native_modules!
   pod 'GoogleUtilities', :modular_headers => true
+  
+  # Add permissions pods
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.

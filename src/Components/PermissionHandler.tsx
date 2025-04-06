@@ -14,6 +14,9 @@ import {
   request,
   RESULTS,
   openSettings,
+  checkMultiple,
+  requestMultiple,
+  Permission,
 } from 'react-native-permissions';
 import {useNavigation} from '@react-navigation/native';
 
@@ -31,33 +34,43 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
   });
   const navigation = useNavigation();
 
+  const getPermissions = (): Record<string, Permission> => {
+    if (Platform.OS === 'ios') {
+      return {
+        camera: PERMISSIONS.IOS.CAMERA,
+        location: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        notifications: PERMISSIONS.IOS.APP_TRACKING_TRANSPARENCY,
+      };
+    }
+    return {
+      camera: PERMISSIONS.ANDROID.CAMERA,
+      location: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      notifications: PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    };
+  };
+
   const checkPermissions = async () => {
     try {
-      // Check camera permission
-      const cameraPermission = await check(
-        Platform.OS === 'ios'
-          ? PERMISSIONS.IOS.CAMERA
-          : PERMISSIONS.ANDROID.CAMERA,
-      );
+      const permissionsToCheck = getPermissions();
+      const statuses = await checkMultiple([
+        permissionsToCheck.camera,
+        permissionsToCheck.location,
+        permissionsToCheck.notifications,
+      ]);
 
-      // Check location permission
-      const locationPermission = await check(
-        Platform.OS === 'ios'
-          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      );
+      const updatedPermissions = {
+        camera: statuses[permissionsToCheck.camera] === RESULTS.GRANTED,
+        location: statuses[permissionsToCheck.location] === RESULTS.GRANTED,
+        notifications:
+          statuses[permissionsToCheck.notifications] === RESULTS.GRANTED,
+      };
 
-      // For notifications, we'll assume it's granted initially
-      // The actual notification permission will be handled by the OS
-      setPermissions({
-        camera: cameraPermission === RESULTS.GRANTED,
-        location: locationPermission === RESULTS.GRANTED,
-        notifications: true, // We'll handle notifications separately
-      });
+      setPermissions(updatedPermissions);
 
       if (
-        cameraPermission === RESULTS.GRANTED &&
-        locationPermission === RESULTS.GRANTED
+        updatedPermissions.camera &&
+        updatedPermissions.location &&
+        updatedPermissions.notifications
       ) {
         onPermissionsGranted?.();
       }
@@ -70,57 +83,45 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     type: 'camera' | 'location' | 'notifications',
   ) => {
     try {
+      const permissionsToRequest = getPermissions();
+      const permission = permissionsToRequest[type];
+
+      if (!permission) {
+        console.error(`No permission found for type: ${type}`);
+        return;
+      }
+
       if (type === 'notifications') {
-        // For notifications, we'll open the app settings
-        // This is because notification permissions are typically handled by the OS
         Alert.alert(
           'Notification Permission',
-          'Please enable notifications in your device settings to receive updates about your bookings.',
+          'Please enable notifications in your device settings to receive important updates.',
           [
-            {
-              text: 'Cancel',
-              style: 'cancel',
-            },
-            {
-              text: 'Open Settings',
-              onPress: () => openSettings(),
-            },
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'Open Settings', onPress: () => openSettings()},
           ],
         );
         return;
       }
 
-      let permission;
-      switch (type) {
-        case 'camera':
-          permission =
-            Platform.OS === 'ios'
-              ? PERMISSIONS.IOS.CAMERA
-              : PERMISSIONS.ANDROID.CAMERA;
-          break;
-        case 'location':
-          permission =
-            Platform.OS === 'ios'
-              ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-              : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
-          break;
-      }
-
       try {
+        console.log(`Requesting permission for ${type}:`, permission);
         const result = await request(permission);
+        console.log(`Permission result for ${type}:`, result);
 
         if (result === RESULTS.GRANTED) {
           setPermissions(prev => ({...prev, [type]: true}));
           checkPermissions();
-        } else if (result === RESULTS.DENIED) {
+        } else {
+          // Handle denied or blocked permissions
+          const blocked =
+            result === RESULTS.BLOCKED || result === RESULTS.DENIED;
           Alert.alert(
             'Permission Required',
-            `Please grant ${type} permission to use this feature.`,
+            blocked
+              ? `Please enable ${type} permission in your device settings to use this feature.`
+              : `Please grant ${type} permission to use this feature.`,
             [
-              {
-                text: 'Cancel',
-                style: 'cancel',
-              },
+              {text: 'Cancel', style: 'cancel'},
               {
                 text: 'Open Settings',
                 onPress: () => openSettings(),
@@ -130,19 +131,12 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
         }
       } catch (error) {
         console.error(`Error requesting ${type} permission:`, error);
-        // If there's an error with the permission request, try opening settings
         Alert.alert(
           'Permission Error',
-          `There was an error requesting ${type} permission. Please enable it in your device settings.`,
+          `There was an error requesting ${type} permission. Please try again.`,
           [
-            {
-              text: 'Cancel',
-              style: 'cancel',
-            },
-            {
-              text: 'Open Settings',
-              onPress: () => openSettings(),
-            },
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'Open Settings', onPress: () => openSettings()},
           ],
         );
       }
