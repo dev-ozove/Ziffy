@@ -19,14 +19,12 @@ target 'Zify' do
   config = use_native_modules!
   pod 'GoogleUtilities', :modular_headers => true
   
-  # Add permissions pods
-  permissions_path = '../node_modules/react-native-permissions/ios'
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
-  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
-  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
-  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
-  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
-  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
+  # Permissions
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera/Permission-Camera.podspec'
+  pod 'Permission-LocationWhenInUse', :path => '../node_modules/react-native-permissions/ios/LocationWhenInUse/Permission-LocationWhenInUse.podspec'
+  pod 'Permission-LocationAlways', :path => '../node_modules/react-native-permissions/ios/LocationAlways/Permission-LocationAlways.podspec'
+  pod 'Permission-Notifications', :path => '../node_modules/react-native-permissions/ios/Notifications/Permission-Notifications.podspec'
 
   use_react_native!(
     :path => config[:reactNativePath],
