@@ -14,8 +14,6 @@ import {
   request,
   RESULTS,
   openSettings,
-  checkNotifications,
-  requestNotifications,
   Permission,
 } from 'react-native-permissions';
 import {useNavigation} from '@react-navigation/native';
@@ -60,37 +58,25 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     }
   };
 
-  const checkNotificationPermission = async () => {
-    try {
-      const {status} = await checkNotifications();
-      return status === 'granted';
-    } catch (error) {
-      console.error('Error checking notification permission:', error);
-      return false;
-    }
-  };
-
   const checkPermissions = async () => {
     try {
       const permissionsToCheck = getPermissions();
 
-      // Check permissions individually to handle errors better
-      const [cameraGranted, locationGranted, notificationsGranted] =
-        await Promise.all([
-          checkSinglePermission('camera', permissionsToCheck.camera),
-          checkSinglePermission('location', permissionsToCheck.location),
-          checkNotificationPermission(),
-        ]);
+      // Check permissions individually
+      const [cameraGranted, locationGranted] = await Promise.all([
+        checkSinglePermission('camera', permissionsToCheck.camera),
+        checkSinglePermission('location', permissionsToCheck.location),
+      ]);
 
       const updatedPermissions = {
         camera: cameraGranted,
         location: locationGranted,
-        notifications: notificationsGranted,
+        notifications: true, // We'll handle notifications separately
       };
 
       setPermissions(updatedPermissions);
 
-      if (cameraGranted && locationGranted && notificationsGranted) {
+      if (cameraGranted && locationGranted) {
         onPermissionsGranted?.();
       }
     } catch (error) {
@@ -103,31 +89,15 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
   ) => {
     try {
       if (type === 'notifications') {
-        try {
-          const {status} = await requestNotifications([
-            'alert',
-            'sound',
-            'badge',
-          ]);
-          setPermissions(prev => ({
-            ...prev,
-            notifications: status === 'granted',
-          }));
-          if (status !== 'granted') {
-            Alert.alert(
-              'Notification Permission Required',
-              'Please enable notifications in your device settings to receive important updates.',
-              [
-                {text: 'Cancel', style: 'cancel'},
-                {text: 'Open Settings', onPress: () => Linking.openSettings()},
-              ],
-            );
-          }
-          return;
-        } catch (error) {
-          console.error('Error requesting notification permission:', error);
-          return;
-        }
+        Alert.alert(
+          'Notification Permission',
+          'Please enable notifications in your device settings to receive important updates.',
+          [
+            {text: 'Cancel', style: 'cancel'},
+            {text: 'Open Settings', onPress: () => Linking.openSettings()},
+          ],
+        );
+        return;
       }
 
       const permissionsToRequest = getPermissions();
@@ -182,10 +152,7 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
   };
 
   useEffect(() => {
-    const initializePermissions = async () => {
-      await checkPermissions();
-    };
-    initializePermissions();
+    checkPermissions();
   }, []);
 
   const renderPermissionButton = (

@@ -8,6 +8,25 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+# If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
+# because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
+#
+# To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
+# ```js
+# module.exports = {
+#   dependencies: {
+#     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
+# ```
+def react_native_post_install(installer, reactNativePath, mac_catalyst_enabled: false)
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < min_ios_version_supported
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = min_ios_version_supported
+      end
+    end
+  end
+end
+
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -21,10 +40,10 @@ target 'Zify' do
   
   # Permissions
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
-  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera/Permission-Camera.podspec'
-  pod 'Permission-LocationWhenInUse', :path => '../node_modules/react-native-permissions/ios/LocationWhenInUse/Permission-LocationWhenInUse.podspec'
-  pod 'Permission-LocationAlways', :path => '../node_modules/react-native-permissions/ios/LocationAlways/Permission-LocationAlways.podspec'
-  pod 'Permission-Notifications', :path => '../node_modules/react-native-permissions/ios/Notifications/Permission-Notifications.podspec'
+  pod 'Permission-Camera', :path => '../node_modules/react-native-permissions/ios/Camera'
+  pod 'Permission-LocationWhenInUse', :path => '../node_modules/react-native-permissions/ios/LocationWhenInUse'
+  pod 'Permission-LocationAlways', :path => '../node_modules/react-native-permissions/ios/LocationAlways'
+  pod 'Permission-Notifications', :path => '../node_modules/react-native-permissions/ios/Notifications'
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -37,8 +56,7 @@ target 'Zify' do
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
+      :mac_catalyst_enabled => false
     )
   end
 end
