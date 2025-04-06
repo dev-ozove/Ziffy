@@ -13,7 +13,6 @@ prepare_react_native_project!
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
 # ```
-use_flipper!()
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
@@ -36,7 +35,7 @@ target 'Zify' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => FlipperConfiguration.disabled,
+    :flipper_configuration => false,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
