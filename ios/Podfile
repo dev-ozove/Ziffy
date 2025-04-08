@@ -36,10 +36,10 @@ target 'Zify' do
   pod 'Firebase/Core'
 
   # React Native permissions (corrected paths)
-  permissions_path = '../node_modules/react-native-permissions'
-  pod 'Permission-Camera', :path => permissions_path
-  pod 'Permission-LocationWhenInUse', :path => permissions_path
-  pod 'Permission-Notifications', :path => permissions_path
+  # permissions_path = '../node_modules/react-native-permissions'
+  # pod 'Permission-Camera', :path => permissions_path
+  # pod 'Permission-LocationWhenInUse', :path => permissions_path
+  # pod 'Permission-Notifications', :path => permissions_path
   
   # Other pods
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
