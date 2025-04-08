@@ -55,6 +55,9 @@ target 'Zify' do
       config.build_settings["CLANG_ENABLE_MODULES"] = "YES"
       config.build_settings["GCC_WARN_INHIBIT_ALL_WARNINGS"] = "YES"
     end
+
+    pod 'Yoga', :path => '../node_modules/react-native/ReactCommon/yoga', :modular_headers => true
+
     
     # Set deployment target for all pods
     installer.pods_project.targets.each do |target|
