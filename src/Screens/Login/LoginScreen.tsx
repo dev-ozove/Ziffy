@@ -25,6 +25,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import PermissionHandler from '../../Components/PermissionHandler';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 
 const {width, height} = Dimensions.get('window');
 
@@ -34,7 +35,7 @@ const LoginScreen = ({navigation}: any) => {
   const phoneInput = useRef<PhoneInput>(null);
   const [loading, setLoading] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [showPermissions, setShowPermissions] = useState(true);
+  const [showPermissions, setShowPermissions] = useState(false);
 
   const {signInWithGoogle, sendOtp, isOtpSent} = useAuth();
 
@@ -48,6 +49,39 @@ const LoginScreen = ({navigation}: any) => {
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
+  }, []);
+
+  useEffect(() => {
+    const checkInitialPermissions = async () => {
+      const permissionsToCheck =
+        Platform.OS === 'ios'
+          ? {
+              camera: PERMISSIONS.IOS.CAMERA,
+              location: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+            }
+          : {
+              camera: PERMISSIONS.ANDROID.CAMERA,
+              location: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+            };
+
+      try {
+        const [cameraResult, locationResult] = await Promise.all([
+          check(permissionsToCheck.camera),
+          check(permissionsToCheck.location),
+        ]);
+
+        const allGranted =
+          cameraResult === RESULTS.GRANTED &&
+          locationResult === RESULTS.GRANTED;
+
+        setShowPermissions(!allGranted);
+      } catch (error) {
+        console.error('Error checking initial permissions:', error);
+        setShowPermissions(true);
+      }
+    };
+
+    checkInitialPermissions();
   }, []);
 
   // In handleLogin function
@@ -97,13 +131,13 @@ const LoginScreen = ({navigation}: any) => {
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
       <Modal
         visible={showPermissions}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={() => setShowPermissions(false)}>
         <View
           style={{
             flex: 1,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: '#fff',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
@@ -114,6 +148,11 @@ const LoginScreen = ({navigation}: any) => {
               width: '90%',
               maxHeight: '80%',
               padding: 16,
+              elevation: 5,
+              shadowColor: '#000',
+              shadowOffset: {width: 0, height: 2},
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
             }}>
             <PermissionHandler
               onPermissionsGranted={handlePermissionsGranted}
@@ -199,30 +238,39 @@ const LoginScreen = ({navigation}: any) => {
                   borderRadius: 8,
                   height: hp('7%'),
                   paddingHorizontal: 10,
+                  alignItems: 'center',
                 }}
                 textContainerStyle={{
                   backgroundColor: '#fff',
                   borderRadius: 8,
                   height: '100%',
                   paddingVertical: 0,
+                  justifyContent: 'center',
                 }}
                 textInputStyle={{
                   height: '100%',
                   fontSize: wp('4%'),
                   color: '#141921',
-                  paddingVertical: 0,
-                  marginTop: 0,
-                  paddingTop: 0,
-                  paddingBottom: 0,
+                  padding: 0,
+                  margin: 0,
                 }}
                 codeTextStyle={{
-                  height: '100%',
                   fontSize: wp('4%'),
                   color: '#141921',
-                  paddingVertical: 0,
-                  marginTop: 0,
-                  paddingTop: 0,
-                  paddingBottom: 0,
+                  padding: 0,
+                  margin: 0,
+                  height: '100%',
+                  textAlignVertical: 'center',
+                }}
+                flagButtonStyle={{
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                countryPickerButtonStyle={{
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
                 defaultCode="AU"
                 layout="first"

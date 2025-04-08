@@ -10,6 +10,7 @@ import Bookings from '../../assets/sidebar/Bookings.svg';
 import Contact from '../../assets/sidebar/Contacts.svg';
 import Settings from '../../assets/sidebar/Settings.svg';
 import Signout from '../../assets/sidebar/Sign_out.svg';
+import avatarIcon from '../../assets/avtar_icon.png';
 
 const CustomDrawerContent = (props: any) => {
   const user = useAppSelector(state => state.user.user);
@@ -59,13 +60,7 @@ const CustomDrawerContent = (props: any) => {
               },
         ]}>
         <View style={styles.profileContent}>
-          <Image
-            source={{
-              uri:
-                auth.currentUser?.photoURL || 'https://via.placeholder.com/150',
-            }}
-            style={styles.profileImage}
-          />
+          <Image source={avatarIcon} style={styles.profileImage} />
           <Text
             style={[
               styles.profileName,

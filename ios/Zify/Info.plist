@@ -63,6 +63,10 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>This app requires Bluetooth access for improved location accuracy.</string>
 	<key>UIAppFonts</key>
+	 <!-- Add this notification description -->
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>This app needs notification permission to send you important updates</string>
+
 	<array>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>

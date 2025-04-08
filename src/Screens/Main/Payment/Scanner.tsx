@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import ScannerLogo from '../../../../assets/Scanner/scanner_logo.svg';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const {width} = Dimensions.get('window');
 
@@ -29,6 +30,13 @@ const Scanner = ({navigation}: any) => {
               d="M0,64L60,96C120,128,240,192,360,192C480,192,600,128,720,117.3C840,107,960,149,1080,160C1200,171,1320,149,1380,138.7L1440,128L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
             />
           </Svg>
+
+          {/* Back Button */}
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}>
+            <Icon name="arrow-back" size={24} color="#333" />
+          </TouchableOpacity>
         </View>
         <View
           style={{
@@ -67,7 +75,7 @@ const Scanner = ({navigation}: any) => {
               onPress={() => {
                 navigation.push('QRScanner');
               }}>
-              <Text style={styles.buttonText}>Let’s Ride</Text>
+              <Text style={styles.buttonText}>Let's Ride</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -85,10 +93,20 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 100, // Adjust height for your design
     backgroundColor: '#FFEFD5',
+    position: 'relative',
   },
   headerWave: {
     position: 'absolute',
     bottom: -90,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 10,
+    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 20,
   },
   wavyContainer: {
     position: 'absolute',

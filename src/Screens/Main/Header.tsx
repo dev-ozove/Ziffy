@@ -13,16 +13,16 @@ import {useOzove} from '../../Context/ozoveContext';
 import {Styles, styles} from '../../Components/MainStyles';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../../assets/Logo_1.svg';
+import {useRoute} from '@react-navigation/native';
 
 interface HeaderProps {
   navigation: any;
-  // handleSuggestions: (querry: any, isPickup: any) => void;
-  // handleLocationSelect: (location: any, isPickup: any) => void;
 }
-export default function Header({
-  navigation,
-}: //handleLocationSelect,
-HeaderProps) {
+
+export default function Header({navigation}: HeaderProps) {
+  const route = useRoute();
+  const isCheckingScreen = route.name === 'Checking_screen';
+
   return (
     <>
       <View style={{flex: 1}}>
@@ -38,23 +38,35 @@ HeaderProps) {
               width: '100%',
             }}>
             <View style={{marginLeft: 20}}>
-              <TouchableOpacity style={styles.headerButton}>
+              <TouchableOpacity
+                style={styles.headerButton}
+                onPress={() =>
+                  isCheckingScreen
+                    ? navigation.navigate('MainDrawer')
+                    : navigation.toggleDrawer()
+                }>
                 <View>
-                  <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                    <View
-                      style={{
-                        height: 40,
-                        width: 40,
-                        borderRadius: 100,
-                        backgroundColor: 'white',
-                        elevation: 5,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        transform: [{translateY: -20}],
-                      }}>
+                  <View
+                    style={{
+                      height: 40,
+                      width: 40,
+                      borderRadius: 100,
+                      backgroundColor: 'white',
+                      elevation: 5,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      transform: [{translateY: -20}],
+                    }}>
+                    {isCheckingScreen ? (
+                      <MaterialCommunityIcons
+                        name="close"
+                        size={24}
+                        color="#000"
+                      />
+                    ) : (
                       <Main_menu />
-                    </View>
-                  </TouchableOpacity>
+                    )}
+                  </View>
                 </View>
               </TouchableOpacity>
             </View>

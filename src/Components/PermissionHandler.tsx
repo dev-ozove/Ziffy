@@ -37,11 +37,13 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
       return {
         camera: PERMISSIONS.IOS.CAMERA,
         location: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+        notifications: PERMISSIONS.IOS.NOTIFICATIONS,
       };
     }
     return {
       camera: PERMISSIONS.ANDROID.CAMERA,
       location: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      notifications: PERMISSIONS.ANDROID.NOTIFICATIONS,
     };
   };
 
@@ -62,21 +64,23 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     try {
       const permissionsToCheck = getPermissions();
 
-      // Check permissions individually
-      const [cameraGranted, locationGranted] = await Promise.all([
-        checkSinglePermission('camera', permissionsToCheck.camera),
-        checkSinglePermission('location', permissionsToCheck.location),
-      ]);
+      const [cameraGranted, locationGranted, notificationsGranted] =
+        await Promise.all([
+          checkSinglePermission('camera', permissionsToCheck.camera),
+          checkSinglePermission('location', permissionsToCheck.location),
+          checkSinglePermission(
+            'notifications',
+            permissionsToCheck.notifications,
+          ),
+        ]);
 
-      const updatedPermissions = {
+      setPermissions({
         camera: cameraGranted,
         location: locationGranted,
-        notifications: true, // We'll handle notifications separately
-      };
+        notifications: notificationsGranted,
+      });
 
-      setPermissions(updatedPermissions);
-
-      if (cameraGranted && locationGranted) {
+      if (cameraGranted && locationGranted && notificationsGranted) {
         onPermissionsGranted?.();
       }
     } catch (error) {
@@ -88,18 +92,6 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     type: 'camera' | 'location' | 'notifications',
   ) => {
     try {
-      if (type === 'notifications') {
-        Alert.alert(
-          'Notification Permission',
-          'Please enable notifications in your device settings to receive important updates.',
-          [
-            {text: 'Cancel', style: 'cancel'},
-            {text: 'Open Settings', onPress: () => Linking.openSettings()},
-          ],
-        );
-        return;
-      }
-
       const permissionsToRequest = getPermissions();
       const permission = permissionsToRequest[type];
 
@@ -109,9 +101,7 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
       }
 
       try {
-        console.log(`Requesting permission for ${type}:`, permission);
         const result = await request(permission);
-        console.log(`Permission result for ${type}:`, result);
 
         if (result === RESULTS.GRANTED) {
           setPermissions(prev => ({...prev, [type]: true}));
@@ -218,17 +208,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#141921',
+    textAlign: 'center',
   },
   subHeader: {
     fontSize: 16,
     color: '#666',
     marginBottom: 24,
+    textAlign: 'center',
   },
   permissionItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
@@ -237,7 +229,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   permissionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: '#141921',
     marginBottom: 4,
@@ -245,12 +237,15 @@ const styles = StyleSheet.create({
   permissionDescription: {
     fontSize: 14,
     color: '#666',
+    lineHeight: 20,
   },
   permissionButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 8,
     backgroundColor: '#FFAF19',
+    minWidth: 100,
+    alignItems: 'center',
   },
   permissionButtonGranted: {
     backgroundColor: '#4CAF50',
@@ -258,6 +253,7 @@ const styles = StyleSheet.create({
   permissionButtonText: {
     color: '#fff',
     fontWeight: '600',
+    fontSize: 16,
   },
   permissionButtonTextGranted: {
     color: '#fff',

@@ -13,6 +13,9 @@ import {useAppSelector} from '../../hooks/useRedux';
 import {getAuth} from '@react-native-firebase/auth';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+// Import the avatar icon
+import avatarIcon from '../../../assets/avtar_icon.png';
+
 export default function AccountScreen() {
   const User = useAppSelector(state => state.user.user);
   const auth = getAuth();
@@ -27,14 +30,7 @@ export default function AccountScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         {/* Profile Picture */}
         <View style={styles.profileContainer}>
-          <Image
-            source={{
-              uri:
-                auth?.currentUser?.photoURL ||
-                'https://via.placeholder.com/150',
-            }}
-            style={styles.profileImage}
-          />
+          <Image source={avatarIcon} style={styles.profileImage} />
           <Text style={styles.userName}>
             {auth?.currentUser?.displayName || 'User Name'}
           </Text>

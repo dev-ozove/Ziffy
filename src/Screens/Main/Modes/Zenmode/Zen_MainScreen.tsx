@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useAppSelector} from '../../../../hooks/useRedux';
 import {
   ActivityIndicator,
@@ -26,44 +26,140 @@ import {Additional_services, Vechicle_data} from '../../../../Config/constants';
 import BookingDescription from '../../components/BookingDescription';
 import FinalBookingScreen from '../../components/FinalBookingScreen';
 import {StripeProvider} from '@stripe/stripe-react-native';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, Region} from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import Header from '../../Header';
 import LoaderZiffy from '../../components/Loader/LoaderZiffy';
+import {Timestamp} from '@react-native-firebase/firestore';
+
+interface LocationData {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+}
+
+interface LocationSuggestion {
+  formatted: string;
+  lat: number;
+  lon: number;
+}
+
+interface BookingInputScreenPropsBase {
+  showNextScreen: number;
+  setShowNextScreen: (screen: number) => void;
+  Additional_services: any[];
+  Vechicle_data: any[];
+  selectedVehicle: number | null;
+  setSelectedVehicle: (vehicle: number | null) => void;
+  pickupLocation: string;
+  dropoffLocation: string;
+  distance: number | null;
+  duration: number | null;
+  servicesState: any;
+  setServicesState: (state: any) => void;
+  vehiclePricing: any;
+  setVehiclePricing: (pricing: any) => void;
+  passengerCount: number;
+  setPassengerCount: (count: number) => void;
+  isExpanded: boolean;
+  setIsExpanded: (expanded: boolean) => void;
+}
+
+interface BookingInputScreenProps extends BookingInputScreenPropsBase {
+  setShowDatePicker: (show: boolean) => void;
+  date: Date;
+  showDatePicker: boolean;
+  setDate: (date: Date) => void;
+  selectedTime: string;
+  setSelectedTime: (time: string) => void;
+  selecetedAdditonalServices: number | null;
+  setSelectedAdditonalServices: (services: number | null) => void;
+}
+
+interface BookingDescriptionProps {
+  contactDetails: any;
+  set_contactDetails: (details: any) => void;
+  showNextScreen: number;
+  setShowNextScreen: (screen: number) => void;
+  notes: string;
+  set_notes: (notes: string) => void;
+  setShowPaymentView: (show: boolean) => void;
+  selectedVehicle: number | null;
+  setPassenger_Count: (count: number) => void;
+  passenger_Count: number;
+}
+
+interface ReviewBookingProps {
+  ServerLoading: boolean;
+  Vechicle_data: any[];
+  Additional_services: any[];
+  selectedVehicle: number | null;
+  setSelectedVehicle: (vehicle: number | null) => void;
+  pickupLocation: string;
+  dropoffLocation: string;
+  distance: number | null;
+  duration: number | null;
+  vehiclePricing: any;
+  setVehiclePricing: (pricing: any) => void;
+  passengerCount: number;
+  setPassengerCount: (count: number) => void;
+  servicesState: any;
+  setServicesState: (state: any) => void;
+  isExpanded: boolean;
+  setIsExpanded: (expanded: boolean) => void;
+  toggleCancilationPolicyModel: () => void;
+}
+
+interface LocationSuggestionResponse {
+  formatted: string;
+  lat: number;
+  lon: number;
+}
+
+interface HeaderProps {
+  navigation: any;
+}
 
 export default function Zen_MainScreen({navigation}: any) {
   const Bookings = useAppSelector(state => state.bookings.bookings);
   const [stripePublicKey, set_stripePublicKey] = useState<any>(null);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState<LocationData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showNextScreen, setShowNextScreen] = useState<number>(1);
-  const [contactDetails, set_contactDetails] = useState();
+  const [contactDetails, set_contactDetails] = useState<any>();
   const [notes, set_notes] = useState<string>('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState('Now');
   const [pickupLocation, setPickupLocation] = useState('');
   const [dropoffLocation, setDropoffLocation] = useState('');
-  const [pickupSuggestions, setPickupSuggestions] = useState([]);
-  const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
-  const [activeInput, setActiveInput] = useState(null);
+  const [pickupSuggestions, setPickupSuggestions] = useState<
+    LocationSuggestion[]
+  >([]);
+  const [dropoffSuggestions, setDropoffSuggestions] = useState<
+    LocationSuggestion[]
+  >([]);
+  const [activeInput, setActiveInput] = useState<'pickup' | 'dropoff' | null>(
+    null,
+  );
   const [selectedVehicle, setSelectedVehicle] = useState<number | null>(0);
-  const [distance, setDistance] = useState<any>(null);
-  const [duration, setDuration] = useState<any>(null);
+  const [distance, setDistance] = useState<number | null>(null);
+  const [duration, setDuration] = useState<number | null>(null);
   const [selecetedAdditonalServices, setSelectedAdditonalServices] = useState<
     number | null
   >(null);
   const [showCancilation, set_showCancilation] = useState(false);
   const pickupInputRef = useRef(null);
   const dropoffInputRef = useRef(null);
-  const mapRef = useRef(null);
+  const mapRef = useRef<MapView>(null);
   const {width} = Dimensions.get('window');
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   const [pickupLocationSuggestions, setPickupLocationSuggestions] =
-    useState<any>();
+    useState<LocationData | null>(null);
   const [dropoffLocationSuggestions, setDropoffLocationSuggestions] =
-    useState<any>();
+    useState<LocationData | null>(null);
   const [showPickupMark, set_showPickupMark] = useState(false);
   const [showDropoffMark, set_showDropoffMark] = useState(false);
 
@@ -359,22 +455,34 @@ export default function Zen_MainScreen({navigation}: any) {
         return (
           <>
             <BookingInputScreen
-              showNextScreen={showNextScreen}
-              setShowNextScreen={setShowNextScreen}
-              Additional_services={Additional_services}
-              Vechicle_data={Vechicle_data}
-              date={date}
-              selecetedAdditonalServices={selecetedAdditonalServices}
-              selectedTime={selectedTime}
-              selectedVehicle={selectedVehicle}
-              setDate={setDate}
-              setSelectedAdditonalServices={setSelectedAdditonalServices}
-              setSelectedTime={setSelectedTime}
-              setSelectedVehicle={setSelectedVehicle}
-              setShowDatePicker={setShowDatePicker}
-              showDatePicker={showDatePicker}
-              dropoffLocation={dropoffLocation}
-              pickupLocation={pickupLocation}
+              {...{
+                showNextScreen,
+                setShowNextScreen,
+                Additional_services,
+                Vechicle_data,
+                selectedVehicle,
+                setSelectedVehicle,
+                pickupLocation,
+                dropoffLocation,
+                distance,
+                duration,
+                servicesState: {},
+                setServicesState: () => {},
+                vehiclePricing: {},
+                setVehiclePricing: () => {},
+                passengerCount: 1,
+                setPassengerCount: () => {},
+                isExpanded: false,
+                setIsExpanded: () => {},
+                setShowDatePicker,
+                date,
+                showDatePicker,
+                setDate,
+                selectedTime,
+                setSelectedTime,
+                selecetedAdditonalServices,
+                setSelectedAdditonalServices,
+              }}
             />
 
             {selectedVehicle !== null && selectedTime !== '' && date && (
@@ -442,12 +550,18 @@ export default function Zen_MainScreen({navigation}: any) {
         return (
           <>
             <BookingDescription
-              contactDetails={contactDetails}
-              set_contactDetails={set_contactDetails}
-              showNextScreen={showNextScreen}
-              setShowNextScreen={setShowNextScreen}
-              notes={notes}
-              set_notes={set_notes}
+              {...{
+                contactDetails,
+                set_contactDetails,
+                showNextScreen,
+                setShowNextScreen,
+                notes,
+                set_notes,
+                setShowPaymentView: () => {},
+                selectedVehicle,
+                setPassenger_Count: () => {},
+                passenger_Count: 1,
+              }}
             />
 
             {contactDetails !== '' ? (
@@ -513,14 +627,26 @@ export default function Zen_MainScreen({navigation}: any) {
         return (
           <>
             <FinalBookingScreen
-              ServerLoading={ServerLoading}
-              Vechicle_data={Vechicle_data}
-              selectedVehicle={selectedVehicle}
-              setShowNextScreen={setShowNextScreen}
-              set_showCancilation={set_showCancilation}
-              showCancilation={showCancilation}
-              showNextScreen={showNextScreen}
-              toggleCancilationPolicyModel={toggleCancilationPolicyModel}
+              {...{
+                ServerLoading,
+                Vechicle_data,
+                Additional_services,
+                selectedVehicle,
+                setSelectedVehicle,
+                pickupLocation,
+                dropoffLocation,
+                distance,
+                duration,
+                vehiclePricing: {},
+                setVehiclePricing: () => {},
+                passengerCount: 1,
+                setPassengerCount: () => {},
+                servicesState: {},
+                setServicesState: () => {},
+                isExpanded: false,
+                setIsExpanded: () => {},
+                toggleCancilationPolicyModel,
+              }}
             />
           </>
         );
@@ -546,13 +672,22 @@ export default function Zen_MainScreen({navigation}: any) {
     }
   }, [stripePublicKey]);
 
-  const handleSuggestions = async (querry: any, isPickup: any) => {
+  const handleSuggestions = async (query: string, isPickup: boolean) => {
+    const suggestions = await _getlocationSuggestions(query);
+    if (!Array.isArray(suggestions)) return;
+
+    const typedSuggestions = suggestions.map(
+      (suggestion: LocationSuggestionResponse) => ({
+        formatted: suggestion.formatted || '',
+        lat: Number(suggestion.lat) || 0,
+        lon: Number(suggestion.lon) || 0,
+      }),
+    );
+
     if (isPickup) {
-      const suggestions = await _getlocationSuggestions(querry);
-      setPickupSuggestions(suggestions);
+      setPickupSuggestions(typedSuggestions);
     } else {
-      const suggestions = await _getlocationSuggestions(querry);
-      setDropoffSuggestions(suggestions);
+      setDropoffSuggestions(typedSuggestions);
     }
   };
 
@@ -567,7 +702,6 @@ export default function Zen_MainScreen({navigation}: any) {
       };
       setPickupLocationSuggestions(data);
       set_showPickupMark(true);
-      mapRef?.current?.animateToRegion(data, 1000);
       setPickupSuggestions([]);
     } else {
       setDropoffLocation(location.formatted);
@@ -579,8 +713,40 @@ export default function Zen_MainScreen({navigation}: any) {
       };
       setDropoffLocationSuggestions(data);
       set_showDropoffMark(true);
-      mapRef?.current?.animateToRegion(data, 1000);
       setDropoffSuggestions([]);
+    }
+
+    // Update map region to show both markers if both are set
+    if (pickupLocationSuggestions && dropoffLocationSuggestions) {
+      const region = {
+        latitude:
+          (pickupLocationSuggestions.latitude +
+            dropoffLocationSuggestions.latitude) /
+          2,
+        longitude:
+          (pickupLocationSuggestions.longitude +
+            dropoffLocationSuggestions.longitude) /
+          2,
+        latitudeDelta:
+          Math.abs(
+            pickupLocationSuggestions.latitude -
+              dropoffLocationSuggestions.latitude,
+          ) * 1.5,
+        longitudeDelta:
+          Math.abs(
+            pickupLocationSuggestions.longitude -
+              dropoffLocationSuggestions.longitude,
+          ) * 1.5,
+      };
+      mapRef?.current?.animateToRegion(region, 1000);
+    } else {
+      // If only one marker is set, center on that marker
+      const markerData = isPickup
+        ? pickupLocationSuggestions
+        : dropoffLocationSuggestions;
+      if (markerData) {
+        mapRef?.current?.animateToRegion(markerData, 1000);
+      }
     }
   };
 
@@ -596,40 +762,64 @@ export default function Zen_MainScreen({navigation}: any) {
                 ref={mapRef}
                 style={styles.map}
                 showsUserLocation={true}
-                region={location}>
-                {/* {location && <Marker coordinate={location} />} */}
-                {showPickupMark && (
+                region={location || undefined}>
+                {showPickupMark && pickupLocationSuggestions && (
                   <Marker
-                    coordinate={pickupLocationSuggestions}
+                    coordinate={{
+                      latitude: pickupLocationSuggestions.latitude,
+                      longitude: pickupLocationSuggestions.longitude,
+                    }}
                     title="Pickup Location"
                     pinColor="green"
                   />
                 )}
 
-                {/* Dropoff Marker */}
-                {showDropoffMark && (
+                {showDropoffMark && dropoffLocationSuggestions && (
                   <Marker
-                    coordinate={dropoffLocationSuggestions}
+                    coordinate={{
+                      latitude: dropoffLocationSuggestions.latitude,
+                      longitude: dropoffLocationSuggestions.longitude,
+                    }}
                     title="Dropoff Location"
                     pinColor="red"
                   />
                 )}
 
-                {showDropoffMark && showPickupMark ? (
-                  <MapViewDirections
-                    origin={pickupLocationSuggestions}
-                    destination={dropoffLocationSuggestions}
-                    apikey={'AIzaSyBKmHJJyiyRLQhkWLIraHr-CHp5QSuY00Q'}
-                    strokeColor="#FFAF19"
-                    strokeWidth={4}
-                    onReady={result => {
-                      setDistance(result.distance); // Distance in meters
-                      setDuration(result.duration); // Duration in minutes
-                      console.log(`Distance: ${result.distance} km`);
-                      console.log(`Duration: ${result.duration} min`);
-                    }}
-                  />
-                ) : null}
+                {showDropoffMark &&
+                  showPickupMark &&
+                  pickupLocationSuggestions &&
+                  dropoffLocationSuggestions && (
+                    <MapViewDirections
+                      origin={{
+                        latitude: pickupLocationSuggestions.latitude,
+                        longitude: pickupLocationSuggestions.longitude,
+                      }}
+                      destination={{
+                        latitude: dropoffLocationSuggestions.latitude,
+                        longitude: dropoffLocationSuggestions.longitude,
+                      }}
+                      apikey={'AIzaSyBKmHJJyiyRLQhkWLIraHr-CHp5QSuY00Q'}
+                      strokeColor="#FFAF19"
+                      strokeWidth={4}
+                      onReady={result => {
+                        setDistance(result.distance);
+                        setDuration(result.duration);
+                        // Fit map to show the entire route
+                        mapRef.current?.fitToCoordinates(result.coordinates, {
+                          edgePadding: {
+                            top: 50,
+                            right: 50,
+                            bottom: 50,
+                            left: 50,
+                          },
+                          animated: true,
+                        });
+                      }}
+                      onError={errorMessage => {
+                        console.error('Directions error:', errorMessage);
+                      }}
+                    />
+                  )}
               </MapView>
             </Pressable>
           )}
