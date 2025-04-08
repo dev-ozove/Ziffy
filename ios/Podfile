@@ -1,13 +1,13 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-# Enable modular headers globally for all pods to resolve Firebase module issues
+# Enable modular headers globally for all pods
 use_modular_headers!
 
-platform :ios, min_ios_version_supported
+platform :ios, '13.0' # Explicitly set minimum iOS version
 prepare_react_native_project!
 
-# Conditional framework linking (leave as-is if you need Flipper/other frameworks)
+# Conditional framework linking
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -27,13 +27,18 @@ target 'Zify' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # Explicitly add Firebase pods with modular headers (if needed)
-  pod 'Firebase/Auth'           # For FirebaseAuth
-  pod 'Firebase/Firestore'      # For FirebaseFirestore
-  pod 'Firebase/Core'           # For FirebaseCore (if using older Firebase versions)
+  # Firebase pods
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Core'
 
+  # React Native permissions with individual subspecs
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
+  pod 'Permission-UserNotifications', :path => "#{permissions_path}/UserNotifications"
+  
   # Other pods
-  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   post_install do |installer|
@@ -42,6 +47,26 @@ target 'Zify' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    
+    # Modern architecture handling (replaces deprecated M1 workaround)
+    installer.pods_project.build_configurations.each do |config|
+      # For Apple Silicon support
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+      # Enable new build system
+      config.build_settings["CLANG_ENABLE_MODULES"] = "YES"
+      config.build_settings["GCC_WARN_INHIBIT_ALL_WARNINGS"] = "YES"
+    end
+    
+    # Set deployment target for all pods
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+        # Fix for React Native permissions
+        if target.name == 'React-Core.common'
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'RCT_NEW_ARCH_ENABLED=1'
+        end
+      end
+    end
   end
 end
