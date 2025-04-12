@@ -1161,39 +1161,39 @@ PODS:
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
   - FBLazyVector (0.77.0)
-  - Firebase/Auth (11.8.0):
+  - Firebase/Auth (11.7.0):
     - Firebase/CoreOnly
-    - FirebaseAuth (~> 11.8.0)
-  - Firebase/CoreOnly (11.8.0):
-    - FirebaseCore (~> 11.8.0)
-  - Firebase/Firestore (11.8.0):
+    - FirebaseAuth (~> 11.7.0)
+  - Firebase/CoreOnly (11.7.0):
+    - FirebaseCore (~> 11.7.0)
+  - Firebase/Firestore (11.7.0):
     - Firebase/CoreOnly
-    - FirebaseFirestore (~> 11.8.0)
-  - FirebaseAppCheckInterop (11.9.0)
-  - FirebaseAuth (11.8.1):
+    - FirebaseFirestore (~> 11.7.0)
+  - FirebaseAppCheckInterop (11.11.0)
+  - FirebaseAuth (11.7.0):
     - FirebaseAppCheckInterop (~> 11.0)
     - FirebaseAuthInterop (~> 11.0)
-    - FirebaseCore (~> 11.8.0)
-    - FirebaseCoreExtension (~> 11.8.0)
+    - FirebaseCore (~> 11.7.0)
+    - FirebaseCoreExtension (~> 11.7.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
     - GoogleUtilities/Environment (~> 8.0)
     - GTMSessionFetcher/Core (< 5.0, >= 3.4)
     - RecaptchaInterop (~> 100.0)
-  - FirebaseAuthInterop (11.9.0)
-  - FirebaseCore (11.8.1):
-    - FirebaseCoreInternal (~> 11.8.0)
+  - FirebaseAuthInterop (11.11.0)
+  - FirebaseCore (11.7.0):
+    - FirebaseCoreInternal (~> 11.7.0)
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/Logger (~> 8.0)
-  - FirebaseCoreExtension (11.8.0):
-    - FirebaseCore (~> 11.8.0)
-  - FirebaseCoreInternal (11.8.0):
+  - FirebaseCoreExtension (11.7.0):
+    - FirebaseCore (~> 11.7.0)
+  - FirebaseCoreInternal (11.7.0):
     - "GoogleUtilities/NSData+zlib (~> 8.0)"
-  - FirebaseFirestore (11.8.0):
-    - FirebaseCore (~> 11.8.0)
-    - FirebaseCoreExtension (~> 11.8.0)
-    - FirebaseFirestoreInternal (= 11.8.0)
+  - FirebaseFirestore (11.7.0):
+    - FirebaseCore (~> 11.7.0)
+    - FirebaseCoreExtension (~> 11.7.0)
+    - FirebaseFirestoreInternal (= 11.7.0)
     - FirebaseSharedSwift (~> 11.0)
-  - FirebaseFirestoreInternal (11.8.0):
+  - FirebaseFirestoreInternal (11.7.0):
     - abseil/algorithm (~> 1.20240116.1)
     - abseil/base (~> 1.20240116.1)
     - abseil/container/flat_hash_map (~> 1.20240116.1)
@@ -1203,12 +1203,12 @@ PODS:
     - abseil/time (~> 1.20240116.1)
     - abseil/types (~> 1.20240116.1)
     - FirebaseAppCheckInterop (~> 11.0)
-    - FirebaseCore (~> 11.8.0)
+    - FirebaseCore (~> 11.7.0)
     - "gRPC-C++ (~> 1.65.0)"
     - gRPC-Core (~> 1.65.0)
     - leveldb-library (~> 1.22)
     - nanopb (~> 3.30910.0)
-  - FirebaseSharedSwift (11.9.0)
+  - FirebaseSharedSwift (11.11.0)
   - fmt (11.0.2)
   - glog (0.3.5)
   - GoogleSignIn (7.1.0):
@@ -2972,18 +2972,18 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNFBApp (21.11.0):
-    - Firebase/CoreOnly (= 11.8.0)
+  - RNFBApp (21.7.4):
+    - Firebase/CoreOnly (= 11.7.0)
     - React-Core
-  - RNFBAuth (21.11.0):
-    - Firebase/Auth (= 11.8.0)
-    - React-Core
-    - RNFBApp
-  - RNFBFirestore (21.11.0):
-    - Firebase/Firestore (= 11.8.0)
+  - RNFBAuth (21.7.4):
+    - Firebase/Auth (= 11.7.0)
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.24.0):
+  - RNFBFirestore (21.7.4):
+    - Firebase/Firestore (= 11.7.0)
+    - React-Core
+    - RNFBApp
+  - RNGestureHandler (2.25.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3005,7 +3005,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNGoogleSignin (13.2.0):
+  - RNGoogleSignin (13.1.0):
     - DoubleConversion
     - glog
     - GoogleSignIn (~> 7.1)
@@ -3048,7 +3048,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNReanimated (3.17.0):
+  - RNReanimated (3.17.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3070,10 +3070,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated (= 3.17.0)
-    - RNReanimated/worklets (= 3.17.0)
+    - RNReanimated/reanimated (= 3.17.3)
+    - RNReanimated/worklets (= 3.17.3)
     - Yoga
-  - RNReanimated/reanimated (3.17.0):
+  - RNReanimated/reanimated (3.17.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3095,56 +3095,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated/apple (= 3.17.0)
+    - RNReanimated/reanimated/apple (= 3.17.3)
     - Yoga
-  - RNReanimated/reanimated/apple (3.17.0):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.11.18.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-hermes
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - Yoga
-  - RNReanimated/worklets (3.17.0):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.11.18.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-hermes
-    - React-ImageManager
-    - React-jsi
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - RNReanimated/worklets/apple (= 3.17.0)
-    - Yoga
-  - RNReanimated/worklets/apple (3.17.0):
+  - RNReanimated/reanimated/apple (3.17.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3167,7 +3120,54 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.9.1):
+  - RNReanimated/worklets (3.17.3):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNReanimated/worklets/apple (= 3.17.3)
+    - Yoga
+  - RNReanimated/worklets/apple (3.17.3):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNScreens (4.10.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3188,9 +3188,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.9.1)
+    - RNScreens/common (= 4.10.0)
     - Yoga
-  - RNScreens/common (4.9.1):
+  - RNScreens/common (4.10.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3233,7 +3233,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNSVG (15.11.2):
+  - RNSVG (15.11.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3253,9 +3253,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNSVG/common (= 15.11.2)
+    - RNSVG/common (= 15.11.1)
     - Yoga
-  - RNSVG/common (15.11.2):
+  - RNSVG/common (15.11.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -3341,6 +3341,8 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
+  - Firebase/Auth (= 11.7.0)
+  - Firebase/CoreOnly (= 11.7.0)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - GoogleUtilities
@@ -3641,16 +3643,16 @@ SPEC CHECKSUMS:
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 2bc03a5cf64e29c611bbc5d7eb9d9f7431f37ee6
-  Firebase: d80354ed7f6df5f9aca55e9eb47cc4b634735eaf
-  FirebaseAppCheckInterop: 9226f7217b43e99dfa0bc9f674ad8108cef89feb
-  FirebaseAuth: ad59a1a7b161e75f74c39f70179d2482d40e2737
-  FirebaseAuthInterop: 2a26ee1bea6d47df8048683cfa071e7da657798f
-  FirebaseCore: 99fe0c4b44a39f37d99e6404e02009d2db5d718d
-  FirebaseCoreExtension: 3d3f2017a00d06e09ab4ebe065391b0bb642565e
-  FirebaseCoreInternal: df24ce5af28864660ecbd13596fc8dd3a8c34629
-  FirebaseFirestore: 563a4ab1a65e2858f05e150bb4c31b0f8f79248b
-  FirebaseFirestoreInternal: 8c5921c360a70e447bfeefb245f450e8b50e750b
-  FirebaseSharedSwift: 574e6a5602afe4397a55c8d4f767382d620285de
+  Firebase: a64bf6a8546e6eab54f1c715cd6151f39d2329f4
+  FirebaseAppCheckInterop: f23709c9ce92d810aa53ff4ce12ad3e666a3c7be
+  FirebaseAuth: 77e25aa24f3e1c626c5babd3338551fc1669ee0e
+  FirebaseAuthInterop: ac22ed402c2f4e3a8c63ebd3278af9a06073c1be
+  FirebaseCore: 3227e35f4197a924206fbcdc0349325baf4f5de4
+  FirebaseCoreExtension: 206c1b399f0d103055207c16f299b28e3dbd1949
+  FirebaseCoreInternal: d6c17dafc8dc33614733a8b52df78fcb4394c881
+  FirebaseFirestore: e8528981558d50872e24119b9448b18e86cab9f6
+  FirebaseFirestoreInternal: 953e31e70db09d928b927b65761171c680d2ea9b
+  FirebaseSharedSwift: b1d32c3b29a911dc174bcf363f2f70bda9509d2f
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
@@ -3728,16 +3730,16 @@ SPEC CHECKSUMS:
   ReactCommon: a02340b2a1a76f3703298a4680bb03277ca87440
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RNDateTimePicker: 0037a03f1099b7745f0a37d994b029204405dff3
-  RNFBApp: f9c347f09f0c87e1d49ff8a216c7475763bf28a7
-  RNFBAuth: acba776a0930fc6e910dc63c1f11a11390d4aee9
-  RNFBFirestore: 11b0b287dc5469e39d0ef6ddb659082c737fcb7a
-  RNGestureHandler: 0a16f3f13829c01268ae55610a40b57b713c8161
-  RNGoogleSignin: e548e9a67bb94980df514f71e107a13d6ebe40d3
+  RNFBApp: 03c1a79b85847e1f8e40e12612de80a7ccda5547
+  RNFBAuth: 75b30ea2b2060aad5dce0c4313a6b0fa654149d6
+  RNFBFirestore: 79a6c431963d2eb4f9faf652ab324b7a0e45d4a2
+  RNGestureHandler: 3ca128bc8b8f15f04ba00dbbd05b90df34404b05
+  RNGoogleSignin: 8ef36e8b5f531e85fb216eeab9f5667ac647a968
   RNPermissions: f3d20fa09374b425bfd1bdacb40121c19e738d8b
-  RNReanimated: 5efd3a9a5f82656b8497c3739c6d8cefb0c063c5
-  RNScreens: 77f93ec55b749c49549b447527ebf78e990125f3
+  RNReanimated: 4130e31fc2b570d0301c53064fece62cda2ad73e
+  RNScreens: ef58b1f3077f7ee62b58f958536ee5ccb52d96b5
   RNShare: 12d13ebc179faf22534c605d17b2c2fa40191850
-  RNSVG: 58d18dfd1774ad6be87c14200a53c988c233f3b9
+  RNSVG: dc2927c9dc1b5aa514b92f72fa7c511d5fc12a2a
   RNVectorIcons: f3e9354fca73876447d183d4b18955e52cd3695c
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Stripe: be805dc0e80a7299de7b10ecbe01ce81412654c8
@@ -3751,6 +3753,6 @@ SPEC CHECKSUMS:
   StripeUICore: b59aa9c9e202b6a03a556c3519eff578274f7598
   Yoga: c34725819ab0a5962e85455b9e56679b306910ee
 
-PODFILE CHECKSUM: f2b092bbfb03e70e0c2249b15b91101c4f4626b5
+PODFILE CHECKSUM: df20cc8d8efa9dade5c58de9c365d04f2f248cdc
 
 COCOAPODS: 1.16.2

@@ -1,36 +1,48 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
+# Required React Native setup
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, min_ios_version_supported
-prepare_react_native_project!
+# Platform setup
+platform :ios, '16.0'
+$FirebaseSDKVersion = '11.7.0'
 
-linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
-  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
-end
+# Hermes configuration
+react_native_path = '../node_modules/react-native'
+hermes_enabled = File.exist?(File.join(react_native_path, 'sdks/.hermesversion'))
 
 target 'Zify' do
-  use_frameworks! :linkage => :static
+  # 1. Configure native modules FIRST
   config = use_native_modules!
-  pod 'GoogleUtilities', :modular_headers => true
+
+  # 2. Framework configuration
+  use_frameworks! :linkage => :static
+
+  # 3. React Native core pods
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :hermes_enabled => hermes_enabled,
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    :fabric_enabled => false
   )
 
+  # 4. Firebase pods
+  pod 'Firebase/CoreOnly', $FirebaseSDKVersion
+  pod 'Firebase/Auth', $FirebaseSDKVersion
+  pod 'GoogleUtilities', :modular_headers => true
+  
+  # Explicitly add react-native-svg
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
-    )
+    react_native_post_install(installer, react_native_path)
+    
+    # Xcode 15 fixes
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
+        # Add deployment target override
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+      end
+    end
   end
 end
