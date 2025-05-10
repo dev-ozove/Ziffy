@@ -28,22 +28,28 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
   const [permissions, setPermissions] = useState({
     camera: false,
     location: false,
-    notifications: false,
   });
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      onPermissionsGranted?.();
+      return;
+    }
+
+    checkPermissions();
+  }, []);
 
   const getPermissions = () => {
     if (Platform.OS === 'ios') {
       return {
         camera: PERMISSIONS.IOS.CAMERA,
         location: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-        notifications: PERMISSIONS.IOS.NOTIFICATIONS,
       };
     }
     return {
       camera: PERMISSIONS.ANDROID.CAMERA,
       location: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      notifications: PERMISSIONS.ANDROID.NOTIFICATIONS,
     };
   };
 
@@ -64,23 +70,17 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     try {
       const permissionsToCheck = getPermissions();
 
-      const [cameraGranted, locationGranted, notificationsGranted] =
-        await Promise.all([
-          checkSinglePermission('camera', permissionsToCheck.camera),
-          checkSinglePermission('location', permissionsToCheck.location),
-          checkSinglePermission(
-            'notifications',
-            permissionsToCheck.notifications,
-          ),
-        ]);
+      const [cameraGranted, locationGranted] = await Promise.all([
+        checkSinglePermission('camera', permissionsToCheck.camera),
+        checkSinglePermission('location', permissionsToCheck.location),
+      ]);
 
       setPermissions({
         camera: cameraGranted,
         location: locationGranted,
-        notifications: notificationsGranted,
       });
 
-      if (cameraGranted && locationGranted && notificationsGranted) {
+      if (cameraGranted && locationGranted) {
         onPermissionsGranted?.();
       }
     } catch (error) {
@@ -88,9 +88,7 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     }
   };
 
-  const requestPermission = async (
-    type: 'camera' | 'location' | 'notifications',
-  ) => {
+  const requestPermission = async (type: 'camera' | 'location') => {
     try {
       const permissionsToRequest = getPermissions();
       const permission = permissionsToRequest[type];
@@ -141,12 +139,8 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
     }
   };
 
-  useEffect(() => {
-    checkPermissions();
-  }, []);
-
   const renderPermissionButton = (
-    type: 'camera' | 'location' | 'notifications',
+    type: 'camera' | 'location',
     title: string,
     description: string,
   ) => (
@@ -188,11 +182,6 @@ const PermissionHandler: React.FC<PermissionHandlerProps> = ({
         'location',
         'Location Access',
         'Required for finding nearby services and navigation',
-      )}
-      {renderPermissionButton(
-        'notifications',
-        'Notifications',
-        'Required for receiving updates about your bookings',
       )}
     </View>
   );

@@ -321,20 +321,63 @@ export default function MainScreen({navigation}: any) {
                         _update_BookingData(formdata);
                         setShowNextScreen(showNextScreen + 1);
                       } else {
+                        // For Testing only
+                        setDistance(17);
+                        setDuration(25);
+
+                        const formdata = [
+                          {
+                            key: 'From',
+                            value: pickupLocation,
+                          },
+                          {
+                            key: 'To',
+                            value: dropoffLocation,
+                          },
+                          {
+                            key: 'PickupCoordinates.lat',
+                            value: pickupLocationSuggestions?.latitude,
+                          },
+                          {
+                            key: 'DropoffCoordinates.lat',
+                            value: dropoffLocationSuggestions?.latitude,
+                          },
+                          {
+                            key: 'PickupCoordinates.long',
+                            value: pickupLocationSuggestions?.longitude,
+                          },
+                          {
+                            key: 'DropoffCoordinates.long',
+                            value: dropoffLocationSuggestions?.longitude,
+                          },
+
+                          {
+                            key: 'TimeStamp',
+                            value: Timestamp.fromMillis(Date.now()),
+                          },
+                          {
+                            key: 'createdAtDate',
+                            value: new Date().toISOString().split('T')[0],
+                          },
+                        ];
+                        _update_BookingData(formdata);
+                        setShowNextScreen(showNextScreen + 1);
+
                         showAlert({
                           type: 'error',
                           message: 'Please select a valid location',
                         });
                       }
                     }}
-                    disabled={
-                      !(
-                        pickupLocationSuggestions?.latitude &&
-                        pickupLocationSuggestions?.longitude &&
-                        dropoffLocationSuggestions?.latitude &&
-                        dropoffLocationSuggestions?.longitude
-                      )
-                    }>
+                    // disabled={
+                    //   !(
+                    //     pickupLocationSuggestions?.latitude &&
+                    //     pickupLocationSuggestions?.longitude &&
+                    //     dropoffLocationSuggestions?.latitude &&
+                    //     dropoffLocationSuggestions?.longitude
+                    //   )
+                    // }
+                  >
                     <View
                       style={{
                         backgroundColor: '#FFAF19',

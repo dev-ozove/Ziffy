@@ -20,7 +20,7 @@ const BookingCard = ({item, navigation}: any) => (
         borderWidth: 1,
         borderColor: '#FFAF19',
         borderRadius: 12,
-        height: 190,
+        height: 210,
         width: '100%',
       }}>
       <View

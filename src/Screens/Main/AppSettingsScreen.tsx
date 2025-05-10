@@ -8,23 +8,31 @@ import {
   StyleSheet,
   Switch,
   ScrollView,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useAuth} from '../../Context/authContext';
 
+// Define types for favorite items
+interface FavoriteItem {
+  id: number;
+  type: string;
+  location: string;
+  status: 'set' | 'add' | 'delete';
+}
+
 export default function AppSettingsScreen() {
-  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
   const navigation = useNavigation();
   const {signOut} = useAuth();
   const handleSignOut = async () => {
     await signOut();
   };
-  const favorites = [
+  const favorites: FavoriteItem[] = [
     {id: 1, type: 'Home', location: 'Downtown Perth', status: 'set'},
     {id: 2, type: 'Work', location: '', status: 'add'},
   ];
 
-  const renderFavoriteItem = ({type, location, status}) => (
+  const renderFavoriteItem = ({type, location, status}: FavoriteItem) => (
     <View style={styles.favoriteItem} key={type}>
       <View style={styles.favoriteLeft}>
         <View style={styles.iconContainer}>
@@ -79,13 +87,13 @@ export default function AppSettingsScreen() {
               name="help-circle-outline"
               size={24}
               color="#000"
-              style={styles.helpIcon}
+              style={styles.headerIcon}
             />
             <Icon
               name="funnel-outline"
               size={24}
               color="#000"
-              style={styles.filterIcon}
+              style={styles.headerIcon}
             />
           </View>
         </View>
@@ -95,25 +103,15 @@ export default function AppSettingsScreen() {
             <Text style={styles.sectionHeader}>All Settings</Text>
           </View>
 
-          <TouchableOpacity style={styles.settingItem}>
-            <View style={styles.settingLeft}>
-              <View style={styles.iconContainer}>
-                <Icon name="notifications-outline" size={24} color="#F4AF48" />
-              </View>
-              <View>
-                <Text style={styles.settingTitle}>Enable Notifications</Text>
-                <Text style={styles.settingDescription}>
-                  Allow us to send you push notifications
-                </Text>
-              </View>
-            </View>
-            <Switch
-              value={isNotificationsEnabled}
-              onValueChange={setIsNotificationsEnabled}
-              trackColor={{false: '#D1D1D6', true: '#F4AF48'}}
-              thumbColor="#FFFFFF"
-            />
-          </TouchableOpacity>
+          {/* Only show permission-related UI on Android */}
+          {Platform.OS === 'android' && (
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuItemTitle}>Permissions</Text>
+              <Text style={styles.menuItemDescription}>
+                Manage app permissions
+              </Text>
+            </TouchableOpacity>
+          )}
 
           <View style={styles.section}>
             <Text style={styles.sectionHeader}>Favorites</Text>
@@ -179,6 +177,9 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     gap: 16,
+  },
+  headerIcon: {
+    marginHorizontal: 8,
   },
   content: {
     flex: 1,

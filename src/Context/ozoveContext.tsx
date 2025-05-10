@@ -80,6 +80,7 @@ export const OzoveProvider: React.FC<OzoveProviderProps> = ({children}) => {
             id: doc.id,
             ...doc.data(),
           }));
+          console.log('vehicles', vehicles);
           set_vechicleData(vehicles);
         },
         error => {
